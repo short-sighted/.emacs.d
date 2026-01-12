@@ -1,0 +1,22 @@
+[submodule "borg"]
+	path = site-lisp/borg
+	url = https://github.com/emacscollective/borg.git
+[submodule "closql"]
+	path = site-lisp/closql
+	url = https://github.com/magit/closql.git
+[submodule "emacsql"]
+	path = site-lisp/emacsql
+	url = https://github.com/magit/emacsql.git
+	no-byte-compile = emacsql-pg.el
+[submodule "cond-let"]
+	path = site-lisp/cond-let
+	url = https://github.com/tarsius/cond-let.git
+[submodule "compat"]
+	path = site-lisp/compat
+	url = https://github.com/emacs-compat/compat.git
+[submodule "llama"]
+	path = site-lisp/llama
+	url = https://github.com/tarsius/llama.git
+[submodule "epkg"]
+	path = site-lisp/epkg
+	url = https://github.com/emacscollective/epkg.git
