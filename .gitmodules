@@ -20,3 +20,6 @@
 [submodule "epkg"]
 	path = site-lisp/epkg
 	url = https://github.com/emacscollective/epkg.git
+[submodule "setup"]
+	path = site-lisp/setup
+	url = https://codeberg.org/pkal/setup.el.git
