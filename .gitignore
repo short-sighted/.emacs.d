@@ -1,3 +1,6 @@
 eln-cache/
 
 /epkgs/
+
+*.elc
+*-autoloads.el
