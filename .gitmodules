@@ -25,12 +25,29 @@
 [submodule "llama"]
 	path = site-lisp/llama
 	url = https://github.com/tarsius/llama.git
-[submodule "setup"]
-	path = site-lisp/setup
-	url = https://codeberg.org/pkal/setup.el.git
+[submodule "macrostep"]
+	path = site-lisp/macrostep
+	url = https://github.com/emacsorphanage/macrostep
 [submodule "magit"]
 	path = site-lisp/magit
 	url = https://github.com/magit/magit.git
+[submodule "marginalia"]
+	path = site-lisp/marginalia
+	url = https://github.com/minad/marginalia
+[submodule "once"]
+	path = site-lisp/once
+	url = https://github.com/emacs-magus/once.git
+	load-path = .
+	load-path = once-setup
+[submodule "setup"]
+	path = site-lisp/setup
+	url = https://codeberg.org/pkal/setup.el.git
+[submodule "transient"]
+	path = site-lisp/transient
+	url = https://github.com/magit/transient
+[submodule "vertico"]
+	path = site-lisp/vertico
+	url = https://github.com/minad/vertico
 [submodule "with-editor"]
 	path = site-lisp/with-editor
 	url = https://github.com/magit/with-editor.git
