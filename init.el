@@ -12,8 +12,10 @@
 ;; Core
 (let ((file-name-handler-alist nil))
   (require 'dream-setup)
+  (require 'dream-better-default))
 
-  (setup magit
+
+(setup magit
   (:when-loaded
     (magit-add-section-hook 'magit-status-sections-hook
 			    'magit-insert-modules
@@ -25,7 +27,7 @@
     (vertico-mode 1)))
 
 (setup marginalia
-  (:hook-into vertico-mode-hook)))
+  (:hook-into vertico-mode-hook))
 
 (setq corfu-auto t
       corfu-delay t)
