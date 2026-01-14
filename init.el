@@ -6,6 +6,7 @@
 
 ;; load-path
 (add-to-list 'load-path (expand-file-name "core" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (add-to-list 'load-path (expand-file-name "site-lisp/borg" user-emacs-directory))
 (require 'borg)
 (borg-initialize)
@@ -17,14 +18,15 @@
 (defconst dream-etc-directory (expand-file-name "etc" dream-local-directory))
 (defconst dream-var-directory (expand-file-name "var" dream-local-directory))
 
-(declare-function vertico-mode "vertico")
-(declare-function marginalia-mode "marginalia")
 
-;; Core
 (let ((file-name-handler-alist nil))
+  ;; Core
   (require 'dream-incremental-loading)
   (require 'dream-setup)
-  (require 'dream-better-default))
+  (require 'dream-better-default)
+
+  ;; Modules
+  (require 'init-completion))
 
 
 (setup magit
@@ -34,17 +36,7 @@
 			    'magit-insert-stashes
 			    'append)))
 
-(setup vetico
-  (:once (list :hooks 'pre-command-hook)
-    (vertico-mode 1)))
 
-(setup consult
-  (:after vertico
-    (require 'consult))
-  (:global [remap goto-line] #'consult-goto-line))
-
-(setup marginalia
-  (:hook-into vertico-mode-hook))
 
 (setq corfu-auto t
       corfu-delay t)

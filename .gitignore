@@ -1,5 +1,8 @@
 eln-cache/
 
+.local/var/*
+!.local/var/.gitkeep
+
 /epkgs/
 
 # ignore from borg build
