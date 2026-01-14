@@ -14,6 +14,14 @@
 	path = site-lisp/cond-let
 	url = https://github.com/tarsius/cond-let.git
 	ignore = untracked
+[submodule "consult"]
+	path = site-lisp/consult
+	url = https://github.com/minad/consult
+	ignore = untracked
+[submodule "consult-flycheck"]
+	path = site-lisp/consult-flycheck
+	url = https://github.com/minad/consult-flycheck
+	ignore = untracked
 [submodule "corfu"]
 	path = site-lisp/corfu
 	url = https://github.com/minad/corfu

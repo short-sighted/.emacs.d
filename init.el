@@ -38,6 +38,11 @@
   (:once (list :hooks 'pre-command-hook)
     (vertico-mode 1)))
 
+(setup consult
+  (:after vertico
+    (require 'consult))
+  (:global [remap goto-line] #'consult-goto-line))
+
 (setup marginalia
   (:hook-into vertico-mode-hook))
 
