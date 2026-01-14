@@ -1,16 +1,24 @@
 ;; init.el --- Initialize Dream Emacs Configuration. -*- lexical-binding: t; -*-
 
-(cl-eval-when (compile)
+;; load-path
+(add-to-list 'load-path (expand-file-name "core" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "site-lisp/borg" user-emacs-directory))
+(require 'borg)
+(borg-initialize)
+
+(eval-when-compile
   (require 'once-setup))
 
-;; Load Path
-(add-to-list 'load-path (expand-file-name "core" user-emacs-directory))
+(defconst dream-local-directory (expand-file-name ".local" user-emacs-directory))
+(defconst dream-etc-directory (expand-file-name "etc" dream-local-directory))
+(defconst dream-var-directory (expand-file-name "var" dream-local-directory))
 
 (declare-function vertico-mode "vertico")
 (declare-function marginalia-mode "marginalia")
 
 ;; Core
 (let ((file-name-handler-alist nil))
+  (require 'dream-incremental-loading)
   (require 'dream-setup)
   (require 'dream-better-default))
 

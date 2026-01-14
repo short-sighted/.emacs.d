@@ -13,6 +13,15 @@
   (:once (list :hooks 'pre-command-hook)
     (delete-selection-mode 1)))
 
+;; recentf
+(setup recentf
+  (:iload recentf)
+  (:when-loaded
+    (:option recentf-auto-cleanup 'never
+	     recentf-max-menu-items 50
+	     recentf-max-saved-items 50
+	     recentf-save-file (expand-file-name "recentf" dream-var-directory))))
+
 ;; pixel-scroll
 (setup pixel-scroll
   (:once (list :hooks 'find-file-hook)
@@ -22,7 +31,9 @@
 ;; hideshow
 (setup hideshow
   (:with-feature hs-minor-mode
-    (:hook-into prog-mode-hook)))
+    (:hook-into prog-mode-hook))
+  (:with-map hs-minor-mode-map
+    (:bind "s-<tab>" hs-cycle)))
 
 (provide 'dream-better-default)
 ;;; dream-better-default.el ends here.
