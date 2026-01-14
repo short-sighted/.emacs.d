@@ -20,6 +20,20 @@
     `(dream-load-packages-incrementally '(,@packages)))
   :documentation "Load packages incrementally.")
 
+(setup-define :global
+  (lambda (key command)
+    `(keymap-global-set ,key ,command))
+  :documentation "Bind KEY to COMMAND in the global map.
+KEY must be a string accepted by `keymap-global-set'.
+For remapping, use \"<remap> <old-command>\" format.
+
+Examples:
+  (:global \"C-c C-c\" my-command)
+  (:global \"<remap> <kill-line>\" my-kill-line)"
+  :debug '(form sexp)
+  :ensure '(nil func)
+  :repeatable t)
+
 (setup-define :opt
   (lambda (name val) `(customize-set-variable ',name ,val))
   :documentation "Customize variables."

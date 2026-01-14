@@ -16,7 +16,7 @@
 (setup consult
   (:after vertico
     (require 'consult))
-  (:global [remap goto-line] #'consult-goto-line))
+  (:global "<remap> <goto-line>" consult-goto-line))
 
 (setup marginalia
   (:hook-into vertico-mode-hook))

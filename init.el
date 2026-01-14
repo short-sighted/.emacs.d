@@ -11,9 +11,6 @@
 (require 'borg)
 (borg-initialize)
 
-(eval-when-compile
-  (require 'once-setup))
-
 (defconst dream-local-directory (expand-file-name ".local" user-emacs-directory))
 (defconst dream-etc-directory (expand-file-name "etc" dream-local-directory))
 (defconst dream-var-directory (expand-file-name "var" dream-local-directory))
