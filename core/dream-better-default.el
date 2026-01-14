@@ -15,12 +15,13 @@
 
 ;; recentf
 (setup recentf
-  (:iload recentf)
+  (:once (list :hooks 'pre-command-hook)
+    (recentf-mode))
   (:when-loaded
     (:option recentf-auto-cleanup 'never
 	     recentf-max-menu-items 50
 	     recentf-max-saved-items 50
-	     recentf-save-file (expand-file-name "recentf" dream-var-directory))))
+	     recentf-save-file (expand-file-name "recentf-save.el" dream-var-directory))))
 
 ;; pixel-scroll
 (setup pixel-scroll

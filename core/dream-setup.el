@@ -20,6 +20,18 @@
     `(dream-load-packages-incrementally '(,@packages)))
   :documentation "Load packages incrementally.")
 
+(setup-define :opt
+  (lambda (name val) `(customize-set-variable ',name ,val))
+  :documentation "Customize variables."
+  :after-loaded t
+  :repeatable t)
+
+(setup-define :opt*
+  (lambda (name val) `(customize-set-variable ',name ,val))
+  :documentation "Customize variables."
+  :debug '(sexp form)
+  :repeatable t)
+
 (setup-define :option*
   (lambda (&rest body)
     `(cl-letf (((symbol-function 'message) #'format))
@@ -52,7 +64,7 @@
     (advice-add 'borg-assimilate
 		:after
 		(lambda (package &rest _args)
-		  (borg--call-git package "conifg" "-f"
+		  (borg--call-git package "config" "-f"
 				  borg-gitmodules-file
 				  (format "submodule.%s.ignore" package)
 				  "untracked")

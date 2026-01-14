@@ -1,53 +1,73 @@
 [submodule "borg"]
 	path = site-lisp/borg
 	url = https://github.com/emacscollective/borg.git
+	ignore = untracked
 [submodule "closql"]
 	path = site-lisp/closql
 	url = https://github.com/magit/closql.git
+	ignore = untracked
 [submodule "compat"]
 	path = site-lisp/compat
 	url = https://github.com/emacs-compat/compat.git
+	ignore = untracked
 [submodule "cond-let"]
 	path = site-lisp/cond-let
 	url = https://github.com/tarsius/cond-let.git
+	ignore = untracked
 [submodule "corfu"]
 	path = site-lisp/corfu
 	url = https://github.com/minad/corfu
 	load-path = .
 	load-path = extensions
+	ignore = untracked
 [submodule "emacsql"]
 	path = site-lisp/emacsql
 	url = https://github.com/magit/emacsql.git
 	no-byte-compile = emacsql-pg.el
+	ignore = untracked
 [submodule "epkg"]
 	path = site-lisp/epkg
 	url = https://github.com/emacscollective/epkg.git
+	ignore = untracked
+[submodule "flycheck"]
+	path = site-lisp/flycheck
+	url = https://github.com/flycheck/flycheck
+	ignore = untracked
 [submodule "llama"]
 	path = site-lisp/llama
 	url = https://github.com/tarsius/llama.git
+	ignore = untracked
 [submodule "macrostep"]
 	path = site-lisp/macrostep
 	url = https://github.com/emacsorphanage/macrostep
+	ignore = untracked
 [submodule "magit"]
 	path = site-lisp/magit
 	url = https://github.com/magit/magit.git
+	ignore = untracked
 [submodule "marginalia"]
 	path = site-lisp/marginalia
 	url = https://github.com/minad/marginalia
+	ignore = untracked
 [submodule "once"]
 	path = site-lisp/once
 	url = https://github.com/emacs-magus/once.git
 	load-path = .
 	load-path = once-setup
+	ignore = untracked
 [submodule "setup"]
 	path = site-lisp/setup
 	url = https://codeberg.org/pkal/setup.el.git
+	ignore = untracked
 [submodule "transient"]
 	path = site-lisp/transient
 	url = https://github.com/magit/transient
+	ignore = untracked
 [submodule "vertico"]
 	path = site-lisp/vertico
 	url = https://github.com/minad/vertico
+	ignore = untracked
 [submodule "with-editor"]
 	path = site-lisp/with-editor
 	url = https://github.com/magit/with-editor.git
+	ignore = untracked

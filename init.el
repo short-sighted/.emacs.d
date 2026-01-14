@@ -1,4 +1,8 @@
 ;; init.el --- Initialize Dream Emacs Configuration. -*- lexical-binding: t; -*-
+;;
+;;; Commentary:
+;;
+;;; Code:
 
 ;; load-path
 (add-to-list 'load-path (expand-file-name "core" user-emacs-directory))
@@ -42,4 +46,5 @@
 (global-corfu-mode)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 
-;; init.el ends here.
+(provide 'init)
+;;; init.el ends here.
