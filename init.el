@@ -20,24 +20,13 @@
   ;; Core
   (require 'dream-incremental-loading)
   (require 'dream-setup)
+  (require 'dream-ui)
   (require 'dream-better-default)
 
   ;; Modules
+  (require 'init-vc)
   (require 'init-completion))
 
-
-(setup magit
-  (:when-loaded
-    (magit-add-section-hook 'magit-status-sections-hook
-			    'magit-insert-modules
-			    'magit-insert-stashes
-			    'append)))
-
-
-
-(setq corfu-auto t
-      corfu-delay t)
-(global-corfu-mode)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 
 (provide 'init)

@@ -71,6 +71,10 @@ Examples:
     (macroexp-progn body))
   :documentation "Init keywords like `use-package' and `leaf'")
 
+(setup epkg
+  (:iload epkg)
+  (:opt* epkg-repository (expand-file-name "epkg/" dream-var-directory)))
+
 (setup borg
   (:option*
    borg-compile-function #'borg-byte+native-compile-async)

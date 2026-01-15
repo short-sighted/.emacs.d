@@ -2,6 +2,10 @@
 	path = site-lisp/borg
 	url = https://github.com/emacscollective/borg.git
 	ignore = untracked
+[submodule "cape"]
+	path = site-lisp/cape
+	url = https://github.com/minad/cape
+	ignore = untracked
 [submodule "closql"]
 	path = site-lisp/closql
 	url = https://github.com/magit/closql.git
@@ -56,6 +60,18 @@
 [submodule "marginalia"]
 	path = site-lisp/marginalia
 	url = https://github.com/minad/marginalia
+	ignore = untracked
+[submodule "mood-line"]
+	path = site-lisp/mood-line
+	url = https://gitlab.com/jessieh/mood-line
+	ignore = untracked
+[submodule "nerd-icons"]
+	path = site-lisp/nerd-icons
+	url = https://github.com/rainstormstudio/nerd-icons.el
+	ignore = untracked
+[submodule "nerd-icons-corfu"]
+	path = site-lisp/nerd-icons-corfu
+	url = https://github.com/LuigiPiucco/nerd-icons-corfu
 	ignore = untracked
 [submodule "once"]
 	path = site-lisp/once
