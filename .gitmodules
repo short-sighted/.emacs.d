@@ -1,3 +1,11 @@
+[submodule "anzu"]
+	path = site-lisp/anzu
+	url = https://github.com/emacsorphanage/anzu
+	ignore = untracked
+[submodule "avy"]
+	path = site-lisp/avy
+	url = https://github.com/abo-abo/avy
+	ignore = untracked
 [submodule "borg"]
 	path = site-lisp/borg
 	url = https://github.com/emacscollective/borg.git
@@ -49,6 +57,14 @@
 	path = site-lisp/llama
 	url = https://github.com/tarsius/llama.git
 	ignore = untracked
+[submodule "lsp-mode"]
+	path = site-lisp/lsp-mode
+	url = https://github.com/emacs-lsp/lsp-mode
+	ignore = untracked
+[submodule "lsp-ui"]
+	path = site-lisp/lsp-ui
+	url = https://github.com/emacs-lsp/lsp-ui
+	ignore = untracked
 [submodule "macrostep"]
 	path = site-lisp/macrostep
 	url = https://github.com/emacsorphanage/macrostep
@@ -91,7 +107,19 @@
 	path = site-lisp/vertico
 	url = https://github.com/minad/vertico
 	ignore = untracked
+[submodule "vundo"]
+	path = site-lisp/vundo
+	url = https://github.com/casouri/vundo
+	ignore = untracked
 [submodule "with-editor"]
 	path = site-lisp/with-editor
 	url = https://github.com/magit/with-editor.git
+	ignore = untracked
+[submodule "yasnippet"]
+	path = site-lisp/yasnippet
+	url = https://github.com/joaotavora/yasnippet
+	ignore = untracked
+[submodule "yasnippet-capf"]
+	path = site-lisp/yasnippet-capf
+	url = https://github.com/elken/yasnippet-capf
 	ignore = untracked

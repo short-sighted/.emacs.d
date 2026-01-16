@@ -12,6 +12,11 @@
   (:opt
    mood-line-glyph-alist mood-line-glyphs-fira-code))
 
+;; Highlight the current line
+(setup hl-line
+  (:with-hook after-init-hook
+    (:hook global-hl-line-mode)))
+
 ;; Font
 (defun dream-init-font-h()
   (when (display-graphic-p)
