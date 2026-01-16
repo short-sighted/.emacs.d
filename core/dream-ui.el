@@ -4,13 +4,43 @@
 ;;
 ;;; Code:
 
-;; modeline
+(require 'dream-lib)
+
+;; Modeline
 (setup mood-line
   (:hook-into after-init-hook)
   (:opt
    mood-line-glyph-alist mood-line-glyphs-fira-code))
 
-;; misc
+;; Font
+(defun dream-init-font-h()
+  (when (display-graphic-p)
+    ;; Set default font
+    (cl-loop for font in '("Cascadia Code" "Jetbrains Mono"
+                           "SF Mono" "Menlo" "Hack" "Source Code Pro"
+                           "Monaco" "DejaVu Sans Mono" "Consolas")
+	     when (dream/font-available-p font)
+             return (set-face-attribute 'default nil
+					:family font
+                                        :height 110)))
+
+  ;; Specify font for all unicode characters
+  (cl-loop for font in '("Apple Symbols" "Segoe UI Symbol" "Symbola" "Symbol")
+	   when (dream/font-available-p font)
+	   return (set-fontset-font t 'symbol (font-spec :family font) nil 'prepend))
+
+  ;; Emoji
+  (cl-loop for font in '("Noto Color Emoji" "Apple Color Emoji" "Segoe UI Emoji")
+	   when (dream/font-available-p font)
+	   return (set-fontset-font t 'emoji (font-spec :family font) nil 'prepend))
+
+  ;; Nerd Fonts use these Private Use Areas.
+  (cl-loop for range in '((#xe000 . #xf8ff) (#xf0000 . #xfffff))
+	   return (set-fontset-font t range "Symbols Nerd Font Mono")))
+(add-hook 'window-setup-hook #'dream-init-font-h)
+(add-hook 'server-after-make-frame-hook #'dream-init-font-h)
+
+;; Misc
 (setq inhibit-startup-screen t
       inhibit-startup-echo-area-message user-login-name
       inhibit-default-init t)
