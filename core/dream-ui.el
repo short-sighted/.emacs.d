@@ -34,6 +34,14 @@
 	   when (dream/font-available-p font)
 	   return (set-fontset-font t 'emoji (font-spec :family font) nil 'prepend))
 
+  ;; Specify font for Chinese characters
+  (cl-loop for font in '("LXGW Neo Xihei" "LXGW WenKai Mono" "WenQuanYi Micro Hei Mono"
+			 "PingFang SC" "Microsoft Yahei UI" "Simhei")
+	   when (dream/font-available-p font)
+	   return (progn
+		    (add-to-list 'face-font-rescale-alist `(,font . 1.3))
+		    (set-fontset-font t 'han (font-spec :family font))))
+
   ;; Nerd Fonts use these Private Use Areas.
   (cl-loop for range in '((#xe000 . #xf8ff) (#xf0000 . #xfffff))
 	   return (set-fontset-font t range "Symbols Nerd Font Mono")))
