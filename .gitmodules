@@ -40,6 +40,10 @@
 	load-path = .
 	load-path = extensions
 	ignore = untracked
+[submodule "dash"]
+	path = site-lisp/dash
+	url = https://github.com/magnars/dash.el
+	ignore = untracked
 [submodule "emacsql"]
 	path = site-lisp/emacsql
 	url = https://github.com/magit/emacsql.git
@@ -49,9 +53,17 @@
 	path = site-lisp/epkg
 	url = https://github.com/emacscollective/epkg.git
 	ignore = untracked
+[submodule "f"]
+	path = site-lisp/f
+	url = https://github.com/rejeep/f.el
+	ignore = untracked
 [submodule "flycheck"]
 	path = site-lisp/flycheck
 	url = https://github.com/flycheck/flycheck
+	ignore = untracked
+[submodule "ht"]
+	path = site-lisp/ht
+	url = https://github.com/Wilfred/ht.el
 	ignore = untracked
 [submodule "llama"]
 	path = site-lisp/llama
@@ -94,6 +106,10 @@
 	url = https://github.com/emacs-magus/once.git
 	load-path = .
 	load-path = once-setup
+	ignore = untracked
+[submodule "s"]
+	path = site-lisp/s
+	url = https://github.com/magnars/s.el
 	ignore = untracked
 [submodule "setup"]
 	path = site-lisp/setup
