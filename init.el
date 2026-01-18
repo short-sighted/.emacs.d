@@ -22,6 +22,7 @@
   (require 'dream-setup)
   (require 'dream-ui)
   (require 'dream-better-default)
+  (require 'dream-editor)
 
   ;; Modules
   (require 'init-vc)

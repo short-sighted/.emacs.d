@@ -34,6 +34,14 @@
 	path = site-lisp/consult-flycheck
 	url = https://github.com/minad/consult-flycheck
 	ignore = untracked
+[submodule "consult-lsp"]
+	path = site-lisp/consult-lsp
+	url = https://github.com/gagbo/consult-lsp
+	ignore = untracked
+[submodule "consult-todo"]
+	path = site-lisp/consult-todo
+	url = https://github.com/eki3z/consult-todo
+	ignore = untracked
 [submodule "corfu"]
 	path = site-lisp/corfu
 	url = https://github.com/minad/corfu
@@ -65,6 +73,10 @@
 	path = site-lisp/ht
 	url = https://github.com/Wilfred/ht.el
 	ignore = untracked
+[submodule "hydra"]
+	path = site-lisp/hydra
+	url = https://github.com/abo-abo/hydra
+	ignore = untracked
 [submodule "llama"]
 	path = site-lisp/llama
 	url = https://github.com/tarsius/llama.git
@@ -89,6 +101,10 @@
 	path = site-lisp/marginalia
 	url = https://github.com/minad/marginalia
 	ignore = untracked
+[submodule "markdown-mode"]
+	path = site-lisp/markdown-mode
+	url = https://github.com/jrblevin/markdown-mode
+	ignore = untracked
 [submodule "mood-line"]
 	path = site-lisp/mood-line
 	url = https://gitlab.com/jessieh/mood-line
@@ -107,6 +123,10 @@
 	load-path = .
 	load-path = once-setup
 	ignore = untracked
+[submodule "orderless"]
+	path = site-lisp/orderless
+	url = https://github.com/oantolin/orderless
+	ignore = untracked
 [submodule "s"]
 	path = site-lisp/s
 	url = https://github.com/magnars/s.el
@@ -114,6 +134,10 @@
 [submodule "setup"]
 	path = site-lisp/setup
 	url = https://codeberg.org/pkal/setup.el.git
+	ignore = untracked
+[submodule "spinner"]
+	path = site-lisp/spinner
+	url = https://github.com/Malabarba/spinner.el
 	ignore = untracked
 [submodule "transient"]
 	path = site-lisp/transient
@@ -123,6 +147,8 @@
 	path = site-lisp/vertico
 	url = https://github.com/minad/vertico
 	ignore = untracked
+	load-path = .
+	load-path = extensions
 [submodule "vundo"]
 	path = site-lisp/vundo
 	url = https://github.com/casouri/vundo

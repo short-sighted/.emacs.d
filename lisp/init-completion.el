@@ -11,7 +11,20 @@
   (:once (list :hooks 'pre-command-hook)
     (vertico-mode 1))
   (:opt* vertico-cycle t
-	 vertico-count 17))
+	 vertico-count 17)
+  (:after vertico
+    (:hooks minibuffer-setup-hook vertico-repeat-save
+	    rfn-eshadow-update-overlay-hook vertico-directory-tidy)
+    (:after savehist
+      (add-to-list 'savehist-additional-variables 'vertico-repeat-history))))
+
+(setup orderless
+  (:once (list :hooks 'pre-command-hook)
+    (require 'orderless))
+  (:opt completion-styles '(orderless basic)
+	completion-category-defaults nil
+	completion-category-overrides '((file (style orderless partial-completion)))
+	orderless-component-separator #'orderless-escapable-split-on-space))
 
 (setup consult
   (:after vertico
