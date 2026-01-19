@@ -26,7 +26,8 @@
 
   ;; Modules
   (require 'init-vc)
-  (require 'init-completion))
+  (require 'init-completion)
+  (require 'init-lsp))
 
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 
