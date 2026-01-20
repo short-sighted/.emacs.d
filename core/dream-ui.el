@@ -6,18 +6,21 @@
 
 (require 'dream-lib)
 
-;; Modeline
+;;
+;;; Modeline
 (setup mood-line
   (:hook-into after-init-hook)
   (:opt
    mood-line-glyph-alist mood-line-glyphs-fira-code))
 
-;; Highlight the current line
+;;
+;;; Highlight the current line
 (setup hl-line
   (:with-hook after-init-hook
     (:hook global-hl-line-mode)))
 
-;; Font
+;;
+;;; Font
 (defun dream-init-font-h()
   (when (display-graphic-p)
     ;; Set default font
@@ -53,7 +56,25 @@
 (add-hook 'window-setup-hook #'dream-init-font-h)
 (add-hook 'server-after-make-frame-hook #'dream-init-font-h)
 
-;; Misc
+;;
+;;; Line numbers
+
+;; Explicitly define a width to reduce the cost of on-the-fly computation
+(setq-default display-line-numbers-width 3)
+
+;; Show absolute line numbers for narrowed regions to make it easier to tell the
+;; buffer is narrowed, and where you are, exactly.
+(setq-default display-line-numbers-widen t)
+
+;; Enable line numbers in most text-editing modes. We avoid
+;; `global-display-line-numbers-mode' because there are many special and
+;; temporary modes where we don't need/want them.
+(dream/add-hook '(prog-mode-hook text-mode-hook)
+                 #'display-line-numbers-mode)
+
+;;
+;;; Misc
+
 (setq inhibit-startup-screen t
       inhibit-startup-echo-area-message user-login-name
       inhibit-default-init t)

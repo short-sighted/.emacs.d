@@ -29,7 +29,5 @@
   (require 'init-completion)
   (require 'init-lsp))
 
-(add-hook 'prog-mode-hook #'display-line-numbers-mode)
-
 (provide 'init)
 ;;; init.el ends here.
