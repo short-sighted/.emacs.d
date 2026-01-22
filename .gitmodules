@@ -30,13 +30,13 @@
 	path = site-lisp/consult
 	url = https://github.com/minad/consult
 	ignore = untracked
+[submodule "consult-eglot"]
+	path = site-lisp/consult-eglot
+	url = https://github.com/mohkale/consult-eglot
+	ignore = untracked
 [submodule "consult-flycheck"]
 	path = site-lisp/consult-flycheck
 	url = https://github.com/minad/consult-flycheck
-	ignore = untracked
-[submodule "consult-lsp"]
-	path = site-lisp/consult-lsp
-	url = https://github.com/gagbo/consult-lsp
 	ignore = untracked
 [submodule "consult-todo"]
 	path = site-lisp/consult-todo
@@ -51,6 +51,10 @@
 [submodule "dash"]
 	path = site-lisp/dash
 	url = https://github.com/magnars/dash.el
+	ignore = untracked
+[submodule "eldoc-box"]
+	path = site-lisp/eldoc-box
+	url = https://github.com/casouri/eldoc-box
 	ignore = untracked
 [submodule "emacsql"]
 	path = site-lisp/emacsql
@@ -80,16 +84,6 @@
 [submodule "llama"]
 	path = site-lisp/llama
 	url = https://github.com/tarsius/llama.git
-	ignore = untracked
-[submodule "lsp-mode"]
-	path = site-lisp/lsp-mode
-	url = https://github.com/emacs-lsp/lsp-mode
-	ignore = untracked
-	load-path = .
-	load-path = clients
-[submodule "lsp-ui"]
-	path = site-lisp/lsp-ui
-	url = https://github.com/emacs-lsp/lsp-ui
 	ignore = untracked
 [submodule "macrostep"]
 	path = site-lisp/macrostep

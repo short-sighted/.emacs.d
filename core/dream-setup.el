@@ -34,6 +34,17 @@ Examples:
   :ensure '(nil func)
   :repeatable t)
 
+(setup-define :autoload
+  (lambda (func)
+    (let ((fn (if (memq (car-safe func) '(quote function))
+                  (cadr func)
+                func)))
+      `(unless (fboundp (quote ,fn))
+         (autoload (function ,fn) ,(symbol-name (setup-get 'feature)) nil t))))
+  :documentation "Autoload COMMAND if not already bound."
+  :repeatable t
+  :signature '(FUNC ...))
+
 (setup-define :opt
   (lambda (name val) `(customize-set-variable ',name ,val))
   :documentation "Customize variables."

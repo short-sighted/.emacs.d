@@ -70,7 +70,12 @@
 ;; `global-display-line-numbers-mode' because there are many special and
 ;; temporary modes where we don't need/want them.
 (dream/add-hook '(prog-mode-hook text-mode-hook)
-                 #'display-line-numbers-mode)
+                #'display-line-numbers-mode)
+
+;;
+;;; Eldoc
+(setup eldoc
+  (:opt eldoc-idle-delay 2))
 
 ;;
 ;;; Misc

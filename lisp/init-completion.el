@@ -54,10 +54,33 @@
 	corfu-preselect nil
 	corfu-margin-formatters '(nerd-icons-corfu-formatter)))
 
-;;cape
+;;
+;;; cape
 (setup cape
-  (:once (list :before 'global-corfu-mode)
-    (:hooks completion-at-point-functions cape-file)))
+  (dream/add-hook 'prog-mode-hook
+    (defun +corfu-add-cape-file-h ()
+      (add-hook 'completion-at-point-functions #'cape-file -10 t)))
+
+  ;; Make these capfs composable.
+  (advice-add #'comint-completion-at-point :around #'cape-wrap-nonexclusive)
+  (advice-add #'eglot-completion-at-point :around #'cape-wrap-nonexclusive)
+  (advice-add #'pcomplete-completions-at-point :around #'cape-wrap-nonexclusive))
+
+(setup yasnippet-capf
+  (dream/add-hook 'yas-minor-mode-hook
+    (defun +corfu-add-yasnippet-capf-h ()
+      (add-hook 'completion-at-point-functions #'yasnippet-capf 30 t))))
+
+;;
+;;; Extensions
+(setup corfu-history
+  (:hook-into corfu-mode-hook)
+  (:after savehist
+    (add-to-list 'savehist-additional-variables 'corfu-history)))
+
+(setup corfu-popupinfo
+  (:hook-into corfu-mode-hook)
+  (:opt corfu-popupinfo-delay '(0.5 . 1.0)))
 
 (provide 'init-completion)
 ;;; init-completion.el ends here.
