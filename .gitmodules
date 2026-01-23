@@ -73,6 +73,10 @@
 	path = site-lisp/flycheck
 	url = https://github.com/flycheck/flycheck
 	ignore = untracked
+[submodule "flyover"]
+	path = site-lisp/flyover
+	url = https://github.com/konrad1977/flyover
+	ignore = untracked
 [submodule "ht"]
 	path = site-lisp/ht
 	url = https://github.com/Wilfred/ht.el

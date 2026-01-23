@@ -28,7 +28,8 @@
   (require 'init-vc)
   (require 'init-completion)
   (require 'init-prog)
-  (require 'init-lsp))
+  (require 'init-lsp)
+  (require 'init-check))
 
 (provide 'init)
 ;;; init.el ends here.
