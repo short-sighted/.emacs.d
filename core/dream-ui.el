@@ -73,11 +73,6 @@
                 #'display-line-numbers-mode)
 
 ;;
-;;; Eldoc
-(setup eldoc
-  (:opt eldoc-idle-delay 2))
-
-;;
 ;;; Misc
 
 (setq inhibit-startup-screen t

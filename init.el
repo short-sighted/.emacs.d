@@ -27,6 +27,7 @@
   ;; Modules
   (require 'init-vc)
   (require 'init-completion)
+  (require 'init-prog)
   (require 'init-lsp))
 
 (provide 'init)
