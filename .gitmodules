@@ -73,6 +73,10 @@
 	path = site-lisp/flycheck
 	url = https://github.com/flycheck/flycheck
 	ignore = untracked
+[submodule "flymake-clippy"]
+	path = site-lisp/flymake-clippy
+	url = https://github.com/mgmarlow/flymake-clippy
+	ignore = untracked
 [submodule "flyover"]
 	path = site-lisp/flyover
 	url = https://github.com/konrad1977/flyover
@@ -127,6 +131,10 @@
 	path = site-lisp/orderless
 	url = https://github.com/oantolin/orderless
 	ignore = untracked
+[submodule "rust-mode"]
+	path = site-lisp/rust-mode
+	url = https://github.com/rust-lang/rust-mode
+	ignore = untracked
 [submodule "s"]
 	path = site-lisp/s
 	url = https://github.com/magnars/s.el
@@ -164,4 +172,8 @@
 [submodule "yasnippet-capf"]
 	path = site-lisp/yasnippet-capf
 	url = https://github.com/elken/yasnippet-capf
+	ignore = untracked
+[submodule "yasnippet-snippets"]
+	path = site-lisp/yasnippet-snippets
+	url = https://github.com/AndreaCrotti/yasnippet-snippets
 	ignore = untracked

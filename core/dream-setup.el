@@ -82,6 +82,24 @@ Examples:
     (macroexp-progn body))
   :documentation "Init keywords like `use-package' and `leaf'")
 
+(setup-define :advice
+  (lambda (symbol where function)
+    `(advice-add ',symbol ,where ,function))
+  :documentation "Add a piece of advice on a function.
+See `advice-add' for more details."
+  :after-loaded t
+  :debug '(sexp sexp function-form)
+  :ensure '(nil nil func)
+  :repeatable t)
+
+(setup-define :bind-map
+  (lambda (map &rest rest)
+    `(:with-map ,map (:bind ,@rest)))
+  :documentation "Bind keys in MAP."
+  :debug '(sexp &rest form sexp)
+  :ensure '(nil &rest kbd func)
+  :indent 1)
+
 (setup epkg
   (:iload epkg)
   (:opt* epkg-repository (expand-file-name "epkg/" dream-var-directory)))

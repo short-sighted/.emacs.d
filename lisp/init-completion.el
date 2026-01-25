@@ -48,7 +48,7 @@
 	corfu-auto t
 	corfu-separator ?\s
 	corfu-max-width 150
-	corfu-auto-prefix 3
+	corfu-auto-prefix 2
 	corfu-auto-delay 0.2
 	corfu-on-exact-match 'quit
 	corfu-preselect nil

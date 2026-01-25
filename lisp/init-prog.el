@@ -27,7 +27,7 @@
                     (current-buffer)
                     '((side . bottom)
                       (slot . 0)
-                      (window-height . 0.2)))))
+                      (window-height . 0.33)))))
           (select-window win)
           (local-set-key (kbd "C-g") #'quit-window)))
        (t (current-buffer)))))
@@ -41,6 +41,22 @@
   (:only-if (treesit-available-p))
   (:opt treesit-enabled-modes t
         treesit-font-lock-level 4))
+
+;;
+;;; Snippet
+(setup yasnippet
+  (:iload eldoc easymenu help-mode)
+  (:hooks after-init-hook yas-global-mode)
+  (:autoload yas-minor-mode-on
+             yas-expand
+             yas-expand-snippet
+             yas-lookup-snippet
+             yas-insert-snippet
+             yas-new-snippet
+             yas-visit-snippet-file
+             yas-activate-extra-mode
+             yas-deactivate-extra-mode
+             yas-maybe-expand-abbrev-key-filter))
 
 (provide 'init-prog)
 ;;; init-prog.el ends here.
