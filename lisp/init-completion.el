@@ -18,13 +18,6 @@
     (:after savehist
       (add-to-list 'savehist-additional-variables 'vertico-repeat-history))))
 
-(setup orderless
-  (:once (list :hooks 'pre-command-hook)
-    (require 'orderless))
-  (:opt completion-styles '(orderless basic)
-	completion-category-defaults nil
-	completion-category-overrides '((file (style orderless partial-completion)))
-	orderless-component-separator #'orderless-escapable-split-on-space))
 
 (setup consult
   (:after vertico
@@ -45,19 +38,22 @@
   (:once (list :hooks 'prog-mode-hook)
     (global-corfu-mode))
   (:opt corfu-cycle t
-	corfu-auto t
-	corfu-separator ?\s
-	corfu-max-width 150
-	corfu-auto-prefix 2
-	corfu-auto-delay 0.2
-	corfu-on-exact-match 'quit
-	corfu-preselect nil
-	corfu-margin-formatters '(nerd-icons-corfu-formatter)))
+	    corfu-auto t
+        corfu-count 16
+        corfu-max-width 120
+        corfu-auto-prefix 2
+        corfu-auto-delay 0.24
+        corfu-preselect 'prompt
+        corfu-on-exact-match nil
+        corfu-quit-at-boundary 'separator
+        corfu-quit-no-match corfu-quit-at-boundary
+        corfu-margin-formatters '(nerd-icons-corfu-formatter)
+        tab-always-indent 'complete))
 
 ;;
 ;;; cape
 (setup cape
-  (dream/add-hook 'prog-mode-hook
+  (dream/add-hook! 'prog-mode-hook
     (defun +corfu-add-cape-file-h ()
       (add-hook 'completion-at-point-functions #'cape-file -10 t)))
 
@@ -67,7 +63,7 @@
   (advice-add #'pcomplete-completions-at-point :around #'cape-wrap-nonexclusive))
 
 (setup yasnippet-capf
-  (dream/add-hook 'yas-minor-mode-hook
+  (dream/add-hook! 'yas-minor-mode-hook
     (defun +corfu-add-yasnippet-capf-h ()
       (add-hook 'completion-at-point-functions #'yasnippet-capf 30 t))))
 
@@ -81,6 +77,14 @@
 (setup corfu-popupinfo
   (:hook-into corfu-mode-hook)
   (:opt corfu-popupinfo-delay '(0.5 . 1.0)))
+
+(setup orderless
+  (:once (list :hooks 'pre-command-hook)
+    (require 'orderless))
+  (:opt completion-styles '(orderless basic)
+	completion-category-defaults nil
+	completion-category-overrides '((file (style orderless partial-completion)))
+	orderless-component-separator #'orderless-escapable-split-on-space))
 
 (provide 'init-completion)
 ;;; init-completion.el ends here.

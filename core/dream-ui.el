@@ -69,7 +69,7 @@
 ;; Enable line numbers in most text-editing modes. We avoid
 ;; `global-display-line-numbers-mode' because there are many special and
 ;; temporary modes where we don't need/want them.
-(dream/add-hook '(prog-mode-hook text-mode-hook)
+(dream/add-hook! '(prog-mode-hook text-mode-hook)
                 #'display-line-numbers-mode)
 
 ;;

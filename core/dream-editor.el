@@ -47,12 +47,12 @@
          ,(file-name-concat auto-save-list-file-prefix "tramp-\\2-") sha1)
         ("\\`/\\([^/]+/\\)*\\([^/]+\\)\\'" ,(file-name-concat auto-save-list-file-prefix "\\2-") sha1)))
 
-(dream/add-hook 'auto-save-hook
+(dream/add-hook! 'auto-save-hook
   (defun dream-ensure-auto-save-prefix-exists-h ()
     (with-file-modes #o700
       (make-directory auto-save-list-file-prefix t))))
 
-(dream/add-hook 'after-save-hook
+(dream/add-hook! 'after-save-hook
   (defun dream-guess-mode-h ()
     "Guess major mode when saving a file in `fundamental-mode'.
 
