@@ -2,6 +2,10 @@
 	path = site-lisp/anzu
 	url = https://github.com/emacsorphanage/anzu
 	ignore = untracked
+[submodule "auto-compile"]
+	path = site-lisp/auto-compile
+	url = https://github.com/emacscollective/auto-compile
+	ignore = untracked
 [submodule "avy"]
 	path = site-lisp/avy
 	url = https://github.com/abo-abo/avy
@@ -160,6 +164,10 @@
 [submodule "vundo"]
 	path = site-lisp/vundo
 	url = https://github.com/casouri/vundo
+	ignore = untracked
+[submodule "web-mode"]
+	path = site-lisp/web-mode
+	url = https://github.com/fxbois/web-mode
 	ignore = untracked
 [submodule "with-editor"]
 	path = site-lisp/with-editor

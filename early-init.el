@@ -1,6 +1,10 @@
-;; early-init.el ---Initialize Early Configuration.  -*- lexical-binding: t; no-byte-compile: t -*-
+;;; early-init.el --- Initialize Early Configuration.  -*- lexical-binding: t; no-byte-compile: t -*-
+;;
+;;; Commentary:
+;;
+;;; Code:
 
-(setq load-prefer-newer nil)
+(setq load-prefer-newer t)
 
 (setq package-enable-at-startup nil)
 

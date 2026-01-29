@@ -58,5 +58,12 @@
              yas-deactivate-extra-mode
              yas-maybe-expand-abbrev-key-filter))
 
+(setup js-jsx
+  (:match-file "*.jsx")
+  (:hooks js-jsx-mode-hook eglot-ensure)
+  (:after eglot
+    (add-to-list 'eglot-server-programs
+                 '(js-jsx-mode . ("typescript-language-server" "--stdio")))))
+
 (provide 'init-prog)
 ;;; init-prog.el ends here.

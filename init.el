@@ -10,6 +10,11 @@
 (add-to-list 'load-path (expand-file-name "site-lisp/borg" user-emacs-directory))
 (require 'borg)
 (borg-initialize)
+(require 'auto-compile)
+(setq auto-compile-native-compile t)
+(auto-compile-on-load-mode)
+(auto-compile-on-save-mode)
+
 
 (defconst dream-local-directory (expand-file-name ".local" user-emacs-directory))
 (defconst dream-etc-directory (expand-file-name "etc" dream-local-directory))

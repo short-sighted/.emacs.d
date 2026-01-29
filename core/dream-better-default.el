@@ -1,5 +1,11 @@
-;; dream-better-default.el --- Initialize dream better default configuration. -*- lexical-binding: t; -*-
+;;; dream-better-default.el --- Initialize dream better default configuration. -*- lexical-binding: t; -*-
+;;
+;;; Commentary:
+;;
+;;; Code:
 
+(cl-eval-when (compile)
+  (require 'dream-setup))
 
 ;; Disable backup file mechanism
 (setq make-backup-files nil)

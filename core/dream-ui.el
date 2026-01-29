@@ -4,6 +4,9 @@
 ;;
 ;;; Code:
 
+(cl-eval-when (compile)
+  (require 'dream-setup))
+
 (require 'dream-lib)
 
 ;;
