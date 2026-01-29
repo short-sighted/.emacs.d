@@ -60,10 +60,16 @@
 
 (setup js-jsx
   (:match-file "*.jsx")
+  (:needs "rass")
   (:hooks js-jsx-mode-hook eglot-ensure)
   (:after eglot
     (add-to-list 'eglot-server-programs
                  '(js-jsx-mode . ("typescript-language-server" "--stdio")))))
+
+(setup c-ts-mode
+  (:autoload c++-ts-mode)
+  (:opt c-ts-mode-enable-doxygen t
+        c-ts-mode-indent-offset 4))
 
 (provide 'init-prog)
 ;;; init-prog.el ends here.

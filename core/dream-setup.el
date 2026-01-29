@@ -100,6 +100,13 @@ See `advice-add' for more details."
   :ensure '(nil &rest kbd func)
   :indent 1)
 
+(setup-define :needs
+    (lambda (executable)
+      `(unless (executable-find ,executable)
+         ,(setup-quit)))
+  :documentation "If EXECUTABLE is not in the path, stop here."
+  :repeatable 1)
+
 (setup epkg
   (:iload epkg)
   (:opt* epkg-repository (expand-file-name "epkg/" dream-var-directory)))
