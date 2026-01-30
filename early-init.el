@@ -4,7 +4,7 @@
 ;;
 ;;; Code:
 
-(setq load-prefer-newer t)
+(setq load-prefer-newer nil)
 
 (setq package-enable-at-startup nil)
 

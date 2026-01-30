@@ -112,7 +112,7 @@ See `advice-add' for more details."
   (:opt* epkg-repository (expand-file-name "epkg/" dream-var-directory)))
 
 (setup borg
-  (:option*
+  (:opt
    borg-compile-function #'borg-byte+native-compile-async)
   (:when-loaded
     (advice-add 'borg-assimilate
