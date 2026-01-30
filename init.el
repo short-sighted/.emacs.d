@@ -4,20 +4,16 @@
 ;;
 ;;; Code:
 
-;; load-path
-(add-to-list 'load-path (expand-file-name "core" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "site-lisp/borg" user-emacs-directory))
-(require 'borg)
-(borg-initialize)
-
 (eval-and-compile ; `borg'
+  (require 'cl-lib)
   (defconst dream-local-directory (expand-file-name ".local" user-emacs-directory))
   (defconst dream-etc-directory (expand-file-name "etc" dream-local-directory))
   (defconst dream-var-directory (expand-file-name "var" dream-local-directory))
-
   (defvar single-autoload-path (expand-file-name "borg/autoload/" dream-etc-directory)
     "single autoload file.")
+  (add-to-list 'load-path (expand-file-name "core" user-emacs-directory))
+  (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+  (add-to-list 'load-path (expand-file-name "site-lisp/borg" user-emacs-directory))
 
   (defun dream-collect-autoloads (file)
     "insert all enabled drone's autoloads file to a single file."
