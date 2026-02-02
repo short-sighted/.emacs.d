@@ -124,7 +124,8 @@
   (require 'init-completion)
   (require 'init-prog)
   (require 'init-lsp)
-  (require 'init-check))
+  (require 'init-check)
+  (require 'init-llm))
 
 (provide 'init)
 ;;; init.el ends here.

@@ -10,6 +10,10 @@
 	path = site-lisp/borg
 	url = https://github.com/emacscollective/borg.git
 	ignore = untracked
+[submodule "breadcrumb"]
+	path = site-lisp/breadcrumb
+	url = https://github.com/joaotavora/breadcrumb
+	ignore = untracked
 [submodule "cape"]
 	path = site-lisp/cape
 	url = https://github.com/minad/cape
@@ -81,6 +85,10 @@
 	path = site-lisp/flyover
 	url = https://github.com/konrad1977/flyover
 	ignore = untracked
+[submodule "gptel"]
+	path = site-lisp/gptel
+	url = https://github.com/karthink/gptel
+	ignore = untracked
 [submodule "ht"]
 	path = site-lisp/ht
 	url = https://github.com/Wilfred/ht.el
@@ -108,6 +116,10 @@
 [submodule "markdown-mode"]
 	path = site-lisp/markdown-mode
 	url = https://github.com/jrblevin/markdown-mode
+	ignore = untracked
+[submodule "mcp"]
+	path = site-lisp/mcp
+	url = https://github.com/lizqwerscott/mcp.el
 	ignore = untracked
 [submodule "mood-line"]
 	path = site-lisp/mood-line
