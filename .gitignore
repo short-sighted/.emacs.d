@@ -1,4 +1,4 @@
-eln-cache/
+**/eln-cache/
 
 .local/var/*
 !.local/var/.gitkeep
@@ -6,6 +6,6 @@ eln-cache/
 /epkgs/
 
 # ignore from borg build
-*.elc
+**/*.elc
 *-autoloads.el
 dir
