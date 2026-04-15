@@ -14,12 +14,6 @@
 (require 'setup)
 (require 'once-setup)
 
-;; setup
-(setup-define :iload
-  (lambda (&rest packages)
-    `(dream-load-packages-incrementally '(,@packages)))
-  :documentation "Load packages incrementally.")
-
 (setup-define :global
   (lambda (key command)
     `(keymap-global-set ,key ,command))
