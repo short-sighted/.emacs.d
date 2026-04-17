@@ -55,7 +55,7 @@ Examples:
   (lambda (&rest body)
     `(cl-letf (((symbol-function 'message) #'format))
        ,(macroexp-progn body)))
-  :documentation "Evaluate BODY but keep the echo era clean."
+  :documentation "Evaluate BODY but keep the echo aera clean."
   :debug '(setup))
 
 (setup-define :after
@@ -106,7 +106,7 @@ See `advice-add' for more details."
   (:opt* epkg-repository (expand-file-name "epkg/" dream-var-directory)))
 
 (setup borg
-  (:autoload borg-clone borg-build borg-remove borg-assimilate)
+  (:autoload borg-clone borg-build borg-remove borg-assimilate borg-insert-update-message)
   (:opt
    borg-compile-function #'borg-byte+native-compile-async)
   (:when-loaded

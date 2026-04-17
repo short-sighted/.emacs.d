@@ -11,6 +11,9 @@
   (require 'info)
   (require 'once))
 
+(advice-add 'once--run-incrementally :around (lambda (fn &rest args)
+                                 (quiet! (apply fn args))))
+
 (setq once-idle-timer (if (daemonp) 0 1.5)
       once-incremental-run-interval 1.5)
 (setq once-setup-keyword-aliases

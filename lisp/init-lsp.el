@@ -1,6 +1,6 @@
 ;;; init-lsp.el --- Initialize language server configurations.  -*- lexical-binding: t; -*-
 ;;
-;;; Commentray:
+;;; Commentary:
 ;;
 ;;; Code:
 

@@ -16,6 +16,7 @@
 
 (let ((file-name-handler-alist nil))
   ;; Core
+  (require 'dream-lib)
   (require 'dream-incremental-loading)
   (require 'dream-setup)
   (require 'dream-ui)
