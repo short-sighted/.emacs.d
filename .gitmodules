@@ -85,6 +85,14 @@
 	path = site-lisp/flyover
 	url = https://github.com/konrad1977/flyover
 	ignore = untracked
+[submodule "geiser"]
+	path = site-lisp/geiser
+	url = https://gitlab.com/emacs-geiser/geiser
+	ignore = untracked
+[submodule "geiser-racket"]
+	path = site-lisp/geiser-racket
+	url = https://gitlab.com/emacs-geiser/racket
+	ignore = untracked
 [submodule "gptel"]
 	path = site-lisp/gptel
 	url = https://github.com/karthink/gptel
