@@ -121,5 +121,11 @@ See `advice-add' for more details."
 				  "untracked")
 		  (borg--call-git package "add" ".gitmodules")))))
 
+(setup exec-path-from-shell
+  (:require exec-path-from-shell)
+  (:hooks after-init-hook exec-path-from-shell-initialize)
+  (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO" "LANG" "LC_CTYPE" "NIX_SSL_CERT_FILE" "NIX_PATH"))
+  (add-to-list 'exec-path-from-shell-variables var)))
+
 (provide 'dream-setup)
 ;;; dream-setup.el ends here.

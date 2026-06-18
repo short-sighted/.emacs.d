@@ -77,6 +77,10 @@
 	path = site-lisp/epkg
 	url = https://github.com/emacscollective/epkg.git
 	ignore = untracked
+[submodule "exec-path-from-shell"]
+	path = site-lisp/exec-path-from-shell
+	url = https://github.com/purcell/exec-path-from-shell
+	ignore = untracked
 [submodule "f"]
 	path = site-lisp/f
 	url = https://github.com/rejeep/f.el
