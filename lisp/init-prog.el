@@ -58,13 +58,12 @@
              yas-deactivate-extra-mode
              yas-maybe-expand-abbrev-key-filter))
 
-(setup js-jsx
-  (:match-file "*.jsx")
-  (:needs "rass")
-  (:hooks js-jsx-mode-hook eglot-ensure)
-  (:after eglot
-    (add-to-list 'eglot-server-programs
-                 '(js-jsx-mode . ("typescript-language-server" "--stdio")))))
+(setup web-mode
+  (:match-file "*.vue")
+  (:hooks web-mode-hook lsp-deferred)
+  (:after lsp-mode
+    (add-to-list 'lsp-language-id-configuration '(web-mode . "vue"))))
+
 
 (setup c-ts-mode
   (:autoload c++-ts-mode)

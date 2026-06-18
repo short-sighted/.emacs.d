@@ -58,14 +58,16 @@
       (add-hook 'completion-at-point-functions #'cape-file -10 t)))
 
   ;; Make these capfs composable.
+  (advice-add #'lsp-completion-at-point :around #'cape-wrap-noninterruptible)
+  (advice-add #'lsp-completion-at-point :around #'cape-wrap-nonexclusive)
   (advice-add #'comint-completion-at-point :around #'cape-wrap-nonexclusive)
   (advice-add #'eglot-completion-at-point :around #'cape-wrap-nonexclusive)
   (advice-add #'pcomplete-completions-at-point :around #'cape-wrap-nonexclusive))
 
-(setup yasnippet-capf
-  (dream/add-hook! 'yas-minor-mode-hook
-    (defun +corfu-add-yasnippet-capf-h ()
-      (add-hook 'completion-at-point-functions #'yasnippet-capf 30 t))))
+;; (setup yasnippet-capf
+;;   (dream/add-hook! 'yas-minor-mode-hook
+;;     (defun +corfu-add-yasnippet-capf-h ()
+;;       (add-hook 'completion-at-point-functions #'yasnippet-capf 30 t))))
 
 ;;
 ;;; Extensions

@@ -42,6 +42,10 @@
 	path = site-lisp/consult-flycheck
 	url = https://github.com/minad/consult-flycheck
 	ignore = untracked
+[submodule "consult-lsp"]
+	path = site-lisp/consult-lsp
+	url = https://github.com/gagbo/consult-lsp
+	ignore = untracked
 [submodule "consult-todo"]
 	path = site-lisp/consult-todo
 	url = https://github.com/eki3z/consult-todo
@@ -55,6 +59,10 @@
 [submodule "dash"]
 	path = site-lisp/dash
 	url = https://github.com/magnars/dash.el
+	ignore = untracked
+[submodule "doom-modeline"]
+	path = site-lisp/doom-modeline
+	url = https://github.com/seagle0128/doom-modeline
 	ignore = untracked
 [submodule "eldoc-box"]
 	path = site-lisp/eldoc-box
@@ -109,6 +117,11 @@
 	path = site-lisp/llama
 	url = https://github.com/tarsius/llama.git
 	ignore = untracked
+[submodule "lsp-mode"]
+	path = site-lisp/lsp-mode
+	url = https://github.com/emacs-lsp/lsp-mode
+    load-path = .
+    load-path = clients
 [submodule "macrostep"]
 	path = site-lisp/macrostep
 	url = https://github.com/emacsorphanage/macrostep
@@ -141,6 +154,10 @@
 	path = site-lisp/nerd-icons-corfu
 	url = https://github.com/LuigiPiucco/nerd-icons-corfu
 	ignore = untracked
+[submodule "on"]
+	path = site-lisp/on
+	url = https://gitlab.com/ajgrf/on.el
+	ignore = untracked
 [submodule "once"]
 	path = site-lisp/once
 	url = https://github.com/emacs-magus/once.git
@@ -162,6 +179,10 @@
 [submodule "setup"]
 	path = site-lisp/setup
 	url = https://codeberg.org/pkal/setup.el.git
+	ignore = untracked
+[submodule "shrink-path"]
+	path = site-lisp/shrink-path
+	url = https://gitlab.com/bennya/shrink-path.el
 	ignore = untracked
 [submodule "spinner"]
 	path = site-lisp/spinner

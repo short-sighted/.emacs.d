@@ -13,6 +13,7 @@
 
 (require 'setup)
 (require 'once-setup)
+(require 'on)
 
 (setup-define :global
   (lambda (key command)
@@ -103,7 +104,8 @@ See `advice-add' for more details."
 
 (setup epkg
   (:iload epkg)
-  (:opt* epkg-repository (expand-file-name "epkg/" dream-var-directory)))
+  (:init
+   (setq epkg-repository (expand-file-name "epkg/" dream-var-directory))))
 
 (setup borg
   (:autoload borg-clone borg-build borg-remove borg-assimilate borg-insert-update-message)

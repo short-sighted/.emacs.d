@@ -1,4 +1,4 @@
-;; dream-ui.el  -*- lexical-binding: t; -*-
+;; dream-ui.el -- UI Configuration.  -*- lexical-binding: t; -*-
 ;;
 ;;; Commentary:
 ;;
@@ -11,10 +11,26 @@
 
 ;;
 ;;; Modeline
-(setup mood-line
+(setup doom-modeline
   (:hook-into after-init-hook)
-  (:opt
-   mood-line-glyph-alist mood-line-glyphs-fira-code))
+  (:hooks doom-modeline-mode-hook size-indication-mode
+          doom-modeline-mode-hook column-number-mode)
+  (:init
+   ;; We display project info in the modeline ourselves
+  (setq projectile-dynamic-mode-line nil)
+  ;; Set these early so they don't trigger variable watchers
+  (setq doom-modeline-bar-width 3
+        doom-modeline-github nil
+        doom-modeline-mu4e nil
+        doom-modeline-persp-name nil
+        doom-modeline-minor-modes nil
+        doom-modeline-major-mode-icon nil
+        doom-modeline-check 'simple  ; default is too busy
+        doom-modeline-buffer-file-name-style 'relative-from-project
+        ;; Only show file encoding if it's non-UTF-8 and different line endings
+        ;; than the current OSes preference
+        doom-modeline-buffer-encoding 'nondefault
+        doom-modeline-default-eol-type (if (featurep :system 'windows) 1 0))))
 
 ;;
 ;;; Highlight the current line
