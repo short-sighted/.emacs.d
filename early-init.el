@@ -4,8 +4,6 @@
 ;;
 ;;; Code:
 
-(setenv "LSP_USE_PLISTS" "true")
-
 (setq load-prefer-newer nil)
 
 (setq package-enable-at-startup nil)

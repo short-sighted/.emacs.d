@@ -18,9 +18,19 @@
 	path = site-lisp/cape
 	url = https://github.com/minad/cape
 	ignore = untracked
+[submodule "chirp"]
+	path = site-lisp/chirp
+	url = https://github.com/LuciusChen/chirp.git
+	ignore = untracked
+    load-path = .
+    load-ptah = lisp
 [submodule "closql"]
 	path = site-lisp/closql
 	url = https://github.com/magit/closql.git
+	ignore = untracked
+[submodule "clutch"]
+	path = site-lisp/clutch
+	url = https://github.com/LuciusChen/clutch
 	ignore = untracked
 [submodule "compat"]
 	path = site-lisp/compat
@@ -146,9 +156,17 @@
 	path = site-lisp/mcp
 	url = https://github.com/lizqwerscott/mcp.el
 	ignore = untracked
+[submodule "mongodb"]
+	path = site-lisp/mongodb
+	url = https://github.com/LuciusChen/mongodb.el
+	ignore = untracked
 [submodule "mood-line"]
 	path = site-lisp/mood-line
 	url = https://gitlab.com/jessieh/mood-line
+	ignore = untracked
+[submodule "mysql"]
+	path = site-lisp/mysql
+	url = https://github.com/LuciusChen/mysql.el
 	ignore = untracked
 [submodule "nerd-icons"]
 	path = site-lisp/nerd-icons
@@ -171,6 +189,14 @@
 [submodule "orderless"]
 	path = site-lisp/orderless
 	url = https://github.com/oantolin/orderless
+	ignore = untracked
+[submodule "pg"]
+	path = site-lisp/pg
+	url = https://github.com/emarsden/pg-el
+	ignore = untracked
+[submodule "redis"]
+	path = site-lisp/redis
+	url = https://github.com/LuciusChen/redis.el
 	ignore = untracked
 [submodule "rust-mode"]
 	path = site-lisp/rust-mode

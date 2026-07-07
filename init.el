@@ -29,6 +29,7 @@
   (require 'init-prog)
   (require 'init-lsp)
   (require 'init-check)
+  (require 'init-utils)
   (require 'init-llm))
 
 (provide 'init)
