@@ -6,6 +6,9 @@
 
 (setup lsp-mode
   (:autoload lsp-install-server)
+  (:when-loaded (fset #'jsonrpc--log-event #'ignore)
+                (setq read-process-output-max (* 1024 1024))
+                (setq lsp-log-io nil))
   (:init
    (setq lsp-session-file (expand-file-name "lsp-session" dream-var-directory)
          lsp-server-install-dir (file-name-concat dream-local-directory "lsp/"))
@@ -18,6 +21,7 @@
 
    (setq lsp-completion-provider :none)
    (add-hook 'lsp-mode-hook #'lsp-completion-mode)))
+
 
 (setup consult-lsp
   (:if-feature consult)
