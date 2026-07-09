@@ -127,6 +127,10 @@
 	path = site-lisp/hydra
 	url = https://github.com/abo-abo/hydra
 	ignore = untracked
+[submodule "jinx"]
+	path = site-lisp/jinx
+	url = https://github.com/minad/jinx
+	ignore = untracked
 [submodule "llama"]
 	path = site-lisp/llama
 	url = https://github.com/tarsius/llama.git

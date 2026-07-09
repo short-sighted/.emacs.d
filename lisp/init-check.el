@@ -1,4 +1,4 @@
-;; init-check.el --- Initailize check configurations. -*- lexical-binding: t; -*-
+;; init-check.el --- Initialize check configurations. -*- lexical-binding: t; -*-
 ;;
 ;;; Commentary:
 ;;
@@ -72,14 +72,15 @@ If no error is found before buffer boundary, wrap around once."
   (:require flymake-clippy)
   (:hooks rust-ts-mode-hook flymake-clippy-setup-backend))
 
-;; (setup flyover
-;;   (:hook-into flymake-mode-hook)
-;;   (:opt flyover-checkers '(flymake)
-;;         flyover-levels '(error)
-;;         flyover-border-style 'arrow
-;;         flyover-display-mode 'hide-on-same-line
-;;         flyover-show-at-eol t
-;;         flyover-virtual-line-type 'none))
+
+;;
+;;; Spell Checker
+(setup jinx
+  (:init (setq jinx-languages "en"))
+  (:hook-into
+   text-mode-hook
+   prog-mode-hook
+   conf-mode-hook))
 
 (provide 'init-check)
 ;;; init-check.el ends here.
