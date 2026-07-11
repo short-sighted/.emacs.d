@@ -1,135 +1,90 @@
-;; dream-lib.el --- Dream Emacs Library.  -*- lexical-binding: t; -*-
-;;
-;;; Commentary
-;;
-;;; Code:
+;;; dream-lib.el --- Small helpers for Dream Emacs. -*- lexical-binding: t; -*-
 
-;;
-;;; Requirements
 (require 'cl-lib)
 
-;;
-;;; Helpers
+(defun dream-unquote (expression)
+  "Return EXPRESSION without quote or function wrappers."
+  (declare (pure t) (side-effect-free t))
+  (while (memq (car-safe expression) '(quote function))
+    (setq expression (cadr expression)))
+  expression)
 
 (defun dream--resolve-hook-forms (hooks)
-  "Converts a list of modes into a list of hook symbols.
-
-If a mode is quoted, it is left as is. If the entire HOOKS list is quoted, the
-list is returned as-is."
+  "Convert unquoted modes in HOOKS to hook symbols."
   (declare (pure t) (side-effect-free t))
-  (let ((hook-list (ensure-list (dream-unquote hooks))))
+  (let ((items (ensure-list (dream-unquote hooks))))
     (if (eq (car-safe hooks) 'quote)
-        hook-list
-      (cl-loop for hook in hook-list
-               if (eq (car-safe hook) 'quote)
-               collect (cadr hook)
-               else collect (intern (format "%s-hook" (symbol-name hook)))))))
+        items
+      (mapcar (lambda (hook)
+                (if (eq (car-safe hook) 'quote)
+                    (cadr hook)
+                  (intern (format "%s-hook" hook))))
+              items))))
 
-;;
-;;; Public library
-(defun dream-unquote (exp)
-  "Return EXP unquoted."
-  (declare (pure t) (side-effect-free t))
-  (while (memq (car-safe exp) '(quote function))
-    (setq exp (cadr exp)))
-  exp)
-
-
-(defun dream/font-available-p(font-name)
-  "Check if not with FONT-NAME is avaiable."
+(defun dream-font-available-p (font-name)
+  "Return non-nil when FONT-NAME is available."
   (find-font (font-spec :name font-name)))
 
-
-(defmacro dream/add-hook! (hooks &rest rest)
-  "A convenience macro for adding N functions to M hooks.
-
-This macro accepts, in order:
-
-  1. The mode(s) or hook(s) to add to. This is either an unquoted mode, an
-     unquoted list of modes, a quoted hook variable or a quoted list of hook
-     variables.
-  2. Optional properties :local, :append, and/or :depth [N], which will make the
-     hook buffer-local or append to the list of hooks (respectively),
-  3. The function(s) to be added: this can be a quoted function, a quoted list
-     thereof, a list of `defun' or `cl-defun' forms, or arbitrary forms (will
-     implicitly be wrapped in a lambda).
-
-\(fn HOOKS [:append :local [:depth N]] FUNCTIONS-OR-FORMS...)"
-  (declare (indent (lambda (indent-point state)
-                     (goto-char indent-point)
-                     (when (looking-at-p "\\s-*(")
-                       (lisp-indent-defform state indent-point))))
-           (debug t))
-  (let* ((hook-forms (dream--resolve-hook-forms hooks))
-         (func-forms ())
-         (defn-forms ())
-         append-p local-p remove-p depth)
+(defmacro dream-add-hook (hooks &rest rest)
+  "Add functions or forms in REST to HOOKS.
+REST accepts :append, :local, :remove and :depth N before its functions."
+  (declare (indent 1) (debug t))
+  (let ((hook-forms (dream--resolve-hook-forms hooks))
+        functions definitions append local remove depth)
     (while (keywordp (car rest))
       (pcase (pop rest)
-        (:append (setq append-p t))
-        (:depth  (setq depth (pop rest)))
-        (:local  (setq local-p t))
-        (:remove (setq remove-p t))))
+        (:append (setq append t))
+        (:local (setq local t))
+        (:remove (setq remove t))
+        (:depth (setq depth (pop rest)))))
     (while rest
-      (let* ((next (pop rest))
-             (first (car-safe next)))
-        (push (cond ((memq first '(function nil))
-                     next)
-                    ((eq first 'quote)
-                     (let ((quoted (cadr next)))
-                       (if (atom quoted)
-                           next
-                         (when (cdr quoted)
-                           (setq rest (cons (list first (cdr quoted)) rest)))
-                         (list first (car quoted)))))
-                    ((memq first '(defun cl-defun))
-                     (push next defn-forms)
-                     (list 'function (cadr next)))
-                    ((prog1 `(lambda (&rest _) ,@(cons next rest))
-                       (setq rest nil))))
-              func-forms)))
+      (let* ((form (pop rest))
+             (head (car-safe form)))
+        (push
+         (cond
+          ((memq head '(function quote)) form)
+          ((memq head '(defun cl-defun))
+           (push form definitions)
+           `#',(cadr form))
+          (t
+           (prog1 `(lambda (&rest _) ,form ,@rest)
+             (setq rest nil))))
+         functions)))
     `(progn
-       ,@defn-forms
-       (dolist (hook ',(nreverse hook-forms))
-         (dolist (func (list ,@func-forms))
-           ,(if remove-p
-                `(remove-hook hook func ,local-p)
-              `(add-hook hook func ,(or depth append-p) ,local-p)))))))
+       ,@(nreverse definitions)
+       (dolist (hook ',hook-forms)
+         (dolist (function (list ,@(nreverse functions)))
+           ,(if remove
+                `(remove-hook hook function ,local)
+              `(add-hook hook function ,(or depth append) ,local)))))))
 
-;;
-;;; Sugars
-
-(defmacro quiet!! (&rest forms)
-  "Run FORMS without generating any output (for real).
-
-Unlike `quiet!', which will only suppress output in the echo area in interactive
-sessions, this truly suppress all output from FORMS."
+(defmacro quiet!! (&rest body)
+  "Evaluate BODY while suppressing messages and load/write notifications."
   (declare (indent 0))
   `(if init-file-debug
-       (progn ,@forms)
-     (letf! ((standard-output (lambda (&rest _)))
-             (defun message (&rest _))
-             (defun load (file &optional noerror _nomessage nosuffix must-suffix)
-               (funcall load file noerror t nosuffix must-suffix))
-             (defun write-region (start end filename &optional append visit lockname mustbenew)
-               (unless visit (setq visit 'no-message))
-               (funcall write-region start end filename append visit lockname mustbenew)))
-       ,@forms)))
+       (progn ,@body)
+     (let ((inhibit-message t)
+           (message-log-max nil)
+           (standard-output #'ignore)
+           (original-load (symbol-function 'load))
+           (original-write-region (symbol-function 'write-region)))
+       (cl-letf (((symbol-function 'message) #'ignore)
+                 ((symbol-function 'load)
+                  (lambda (file &optional noerror _nomessage nosuffix must-suffix)
+                    (funcall original-load file noerror t nosuffix must-suffix)))
+                 ((symbol-function 'write-region)
+                  (lambda (start end filename &optional append visit lockname mustbenew)
+                    (funcall original-write-region start end filename append
+                             (or visit 'no-message) lockname mustbenew))))
+         ,@body))))
 
-(defmacro quiet! (&rest forms)
-  "Run FORMS without generating any output.
-
-This silences calls to `message', `load', `write-region' and anything that
-writes to `standard-output'. In interactive sessions this inhibits output to the
-echo-area, but not to *Messages*."
+(defmacro quiet! (&rest body)
+  "Evaluate BODY without echo-area output."
   (declare (indent 0))
-  `(if init-file-debug
-       (progn ,@forms)
-     ,(if noninteractive
-          `(quiet!! ,@forms)
-        `(let ((inhibit-message t)
-               (save-silently t))
-           (prog1 ,@forms (message ""))))))
+  `(if noninteractive
+       (quiet!! ,@body)
+     (let ((inhibit-message t) (save-silently t))
+       ,@body)))
 
 (provide 'dream-lib)
 ;;; dream-lib.el ends here.

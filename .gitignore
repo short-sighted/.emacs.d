@@ -1,11 +1,10 @@
-**/eln-cache/
+/.local/
 
-.local/var/*
-!.local/var/.gitkeep
+# Borg and local ahead-of-time build artifacts.
+**/*.elc
+*-autoloads.el
 
 /epkgs/
 
-# ignore from borg build
-**/*.elc
-*-autoloads.el
-dir
+# Mac OS
+.DS_Store

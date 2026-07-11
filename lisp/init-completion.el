@@ -1,27 +1,39 @@
-;; init-completion.el --- Initialize completion configurations.     -*- lexical-binding: t -*-
-;;
-;;; Commentary:
-;;
-;;; Code:
+;;; init-completion.el --- Minibuffer and in-buffer completion. -*- lexical-binding: t; -*-
+
+(require 'dream-setup)
 
 (cl-eval-when (compile)
-  (require 'consult-imenu))
+  (require 'savehist)
+  (require 'vertico)
+  (require 'orderless)
+  (require 'corfu)
+  (require 'corfu-auto)
+  (require 'corfu-popupinfo)
+  (require 'cape))
 
-(setup vetico
-  (:once (list :hooks 'pre-command-hook)
+(setup vertico
+  (:iload -80 savehist orderless -70 vertico)
+  (:once (list :hooks
+               (list :hook 'on-first-input-hook :depth -70))
     (vertico-mode 1))
-  (:opt* vertico-cycle t
-	 vertico-count 17)
-  (:after vertico
-    (:hooks minibuffer-setup-hook vertico-repeat-save
-	    rfn-eshadow-update-overlay-hook vertico-directory-tidy)
-    (:after savehist
+  (:set vertico-cycle t
+        vertico-count 17)
+  (:when-loaded
+    (add-hook 'minibuffer-setup-hook #'vertico-repeat-save)
+    (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
+    (with-eval-after-load 'savehist
       (add-to-list 'savehist-additional-variables 'vertico-repeat-history))))
 
+(setup orderless
+  (:require-once (list :hooks 'on-first-input-hook) 'orderless)
+  (:set completion-styles '(orderless basic)
+        completion-category-defaults nil
+        completion-category-overrides
+        '((file (styles orderless partial-completion)))
+        completion-pcm-leading-wildcard t
+        orderless-component-separator #'orderless-escapable-split))
 
 (setup consult
-  (:after vertico
-    (require 'consult))
   (:global
    "<remap> <switch-to-buffer>" consult-buffer
    "<remap> <switch-to-buffer-other-window>" consult-buffer-other-window
@@ -32,13 +44,14 @@
    "C-s" consult-line))
 
 (setup marginalia
-  (:hook-into vertico-mode-hook))
+  (:hook-into vertico-mode))
 
 (setup corfu
-  (:once (list :hooks 'prog-mode-hook)
-    (global-corfu-mode))
-  (:opt corfu-cycle t
-	    corfu-auto t
+  (:iload -40 corfu cape)
+  (:once (list :hooks (list :hook 'prog-mode-hook :depth -80))
+    (global-corfu-mode 1))
+  (:set corfu-cycle t
+        corfu-auto t
         corfu-count 16
         corfu-max-width 120
         corfu-auto-prefix 2
@@ -46,47 +59,47 @@
         corfu-preselect 'prompt
         corfu-on-exact-match nil
         corfu-quit-at-boundary 'separator
-        corfu-quit-no-match corfu-quit-at-boundary
+        corfu-quit-no-match 'separator
         corfu-margin-formatters '(nerd-icons-corfu-formatter)
-        tab-always-indent 'complete))
+        tab-always-indent 'complete)
+  (:once (list :packages 'corfu)
+    (require 'corfu-history)
+    (require 'corfu-popupinfo)
+    (setq corfu-popupinfo-delay '(0.5 . 1.0))
+    (corfu-history-mode 1)
+    (corfu-popupinfo-mode 1)
+    (with-eval-after-load 'savehist
+      (add-to-list 'savehist-additional-variables 'corfu-history))))
 
-;;
-;;; cape
-(setup cape
-  (dream/add-hook! 'prog-mode-hook
-    (defun +corfu-add-cape-file-h ()
-      (add-hook 'completion-at-point-functions #'cape-file -10 t)))
+(defun dream-completion-add-file-capf ()
+  "Add file completion to the current programming buffer."
+  (add-hook 'completion-at-point-functions #'cape-file -10 t))
 
-  ;; Make these capfs composable.
-  (advice-add #'lsp-completion-at-point :around #'cape-wrap-noninterruptible)
-  (advice-add #'lsp-completion-at-point :around #'cape-wrap-nonexclusive)
-  (advice-add #'comint-completion-at-point :around #'cape-wrap-nonexclusive)
-  (advice-add #'eglot-completion-at-point :around #'cape-wrap-nonexclusive)
-  (advice-add #'pcomplete-completions-at-point :around #'cape-wrap-nonexclusive))
+(add-hook 'prog-mode-hook #'dream-completion-add-file-capf)
 
-;; (setup yasnippet-capf
-;;   (dream/add-hook! 'yas-minor-mode-hook
-;;     (defun +corfu-add-yasnippet-capf-h ()
-;;       (add-hook 'completion-at-point-functions #'yasnippet-capf 30 t))))
+(defun dream-completion-advise-capf (function &rest wrappers)
+  "Add each function in WRAPPERS around completion FUNCTION once."
+  (dolist (wrapper wrappers)
+    (unless (advice-member-p wrapper function)
+      (advice-add function :around wrapper))))
 
-;;
-;;; Extensions
-(setup corfu-history
-  (:hook-into corfu-mode-hook)
-  (:after savehist
-    (add-to-list 'savehist-additional-variables 'corfu-history)))
-
-(setup corfu-popupinfo
-  (:hook-into corfu-mode-hook)
-  (:opt corfu-popupinfo-delay '(0.5 . 1.0)))
-
-(setup orderless
-  (:once (list :hooks 'pre-command-hook)
-    (require 'orderless))
-  (:opt completion-styles '(orderless basic)
-	completion-category-defaults nil
-	completion-category-overrides '((file (style orderless partial-completion)))
-	orderless-component-separator #'orderless-escapable-split-on-space))
+(once (list :packages 'lsp-completion)
+  (lambda ()
+    (dream-completion-advise-capf
+     'lsp-completion-at-point
+     #'cape-wrap-noninterruptible #'cape-wrap-nonexclusive)))
+(once (list :packages 'comint)
+  (lambda ()
+    (dream-completion-advise-capf
+     'comint-completion-at-point #'cape-wrap-nonexclusive)))
+(once (list :packages 'eglot)
+  (lambda ()
+    (dream-completion-advise-capf
+     'eglot-completion-at-point #'cape-wrap-nonexclusive)))
+(once (list :packages 'pcomplete)
+  (lambda ()
+    (dream-completion-advise-capf
+     'pcomplete-completions-at-point #'cape-wrap-nonexclusive)))
 
 (provide 'init-completion)
 ;;; init-completion.el ends here.

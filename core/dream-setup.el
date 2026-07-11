@@ -1,132 +1,53 @@
-;; dream-setup.el --- Initialize dream-setup. -*- lexical-binding: t; -*-
-;;
-;;; Commentary:
-;;
-;; setup.el configuration.
-;;
-;;; Code:
-
-(cl-eval-when (compile)
-  (require 'borg)
-  (require 'info)
-  (require 'epkg))
+;;; dream-setup.el --- setup.el integration for Dream Emacs. -*- lexical-binding: t; -*-
 
 (require 'setup)
+
+(eval-and-compile
+  (defvar once-setup-keyword-aliases)
+  ;; once-setup reads this exactly once while it is loaded.
+  (setq once-setup-keyword-aliases
+        '(:once-x-require :require-once
+          :once-require-incrementally :iload)))
 (require 'once-setup)
 (require 'on)
 
 (setup-define :global
-  (lambda (key command)
-    `(keymap-global-set ,key ,command))
-  :documentation "Bind KEY to COMMAND in the global map.
-KEY must be a string accepted by `keymap-global-set'.
-For remapping, use \"<remap> <old-command>\" format.
-
-Examples:
-  (:global \"C-c C-c\" my-command)
-  (:global \"<remap> <kill-line>\" my-kill-line)"
+  (lambda (key command) `(keymap-global-set ,key ,command))
+  :documentation "Bind KEY to COMMAND in the global map."
   :debug '(form sexp)
   :ensure '(nil func)
   :repeatable t)
 
 (setup-define :autoload
-  (lambda (func)
-    (let ((fn (if (memq (car-safe func) '(quote function))
-                  (cadr func)
-                func)))
-      `(unless (fboundp (quote ,fn))
-         (autoload (function ,fn) ,(symbol-name (setup-get 'feature)) nil t))))
-  :documentation "Autoload COMMAND if not already bound."
+  (lambda (function)
+    (let ((name (if (memq (car-safe function) '(quote function))
+                    (cadr function)
+                  function)))
+      `(unless (fboundp ',name)
+         (autoload #',name ,(symbol-name (setup-get 'feature)) nil t))))
+  :documentation "Autoload FUNCTION from the current feature."
   :repeatable t
-  :signature '(FUNC ...))
+  :signature '(FUNCTION ...))
 
-(setup-define :opt
-  (lambda (name val) `(customize-set-variable ',name ,val))
-  :documentation "Customize variables."
-  :after-loaded t
-  :repeatable t)
-
-(setup-define :opt*
-  (lambda (name val) `(customize-set-variable ',name ,val))
-  :documentation "Customize variables."
+(setup-define :set
+  (lambda (name value) `(setq ,name ,value))
+  :documentation "Set NAME to VALUE during configuration registration."
   :debug '(sexp form)
   :repeatable t)
 
-(setup-define :option*
-  (lambda (&rest body)
-    `(cl-letf (((symbol-function 'message) #'format))
-       ,(macroexp-progn body)))
-  :documentation "Evaluate BODY but keep the echo aera clean."
-  :debug '(setup))
-
-(setup-define :after
-  (lambda (feature &rest body)
-    `(:with-feature ,feature
-       (:when-loaded ,@body)))
-  :documentation "EVAL BODY after FEATURE."
-  :indent 1)
-
-(setup-define :hooks
-  (lambda (hook func)
-    `(add-hook ',hook #',func))
-  :documentation "Add pairs of hooks"
-  :repeatable t)
-
-(setup-define :init
-  (lambda (&rest body)
-    (macroexp-progn body))
-  :documentation "Init keywords like `use-package' and `leaf'")
-
 (setup-define :advice
-  (lambda (symbol where function)
-    `(advice-add ',symbol ,where ,function))
-  :documentation "Add a piece of advice on a function.
-See `advice-add' for more details."
+  (lambda (symbol where function) `(advice-add ',symbol ,where ,function))
+  :documentation "Advise SYMBOL after the current feature loads."
   :after-loaded t
   :debug '(sexp sexp function-form)
   :ensure '(nil nil func)
   :repeatable t)
 
-(setup-define :bind-map
-  (lambda (map &rest rest)
-    `(:with-map ,map (:bind ,@rest)))
-  :documentation "Bind keys in MAP."
-  :debug '(sexp &rest form sexp)
-  :ensure '(nil &rest kbd func)
-  :indent 1)
-
 (setup-define :needs
-    (lambda (executable)
-      `(unless (executable-find ,executable)
-         ,(setup-quit)))
-  :documentation "If EXECUTABLE is not in the path, stop here."
+  (lambda (executable)
+    `(unless (executable-find ,executable) ,(setup-quit)))
+  :documentation "Stop the current setup when EXECUTABLE is unavailable."
   :repeatable 1)
-
-(setup epkg
-  (:iload epkg)
-  (:init
-   (setq epkg-repository (expand-file-name "epkg/" dream-var-directory))))
-
-(setup borg
-  (:autoload borg-clone borg-build borg-remove borg-assimilate borg-insert-update-message)
-  (:opt
-   borg-compile-function #'borg-byte+native-compile-async)
-  (:when-loaded
-    (advice-add 'borg-assimilate
-		:after
-		(lambda (package &rest _args)
-		  (borg--call-git package "config" "-f"
-				  borg-gitmodules-file
-				  (format "submodule.%s.ignore" package)
-				  "untracked")
-		  (borg--call-git package "add" ".gitmodules")))))
-
-(setup exec-path-from-shell
-  (:only-if (memq 'window-system '(mac ns x pgtk)))
-  (:require exec-path-from-shell)
-  (:hooks after-init-hook exec-path-from-shell-initialize)
-  (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO" "LANG" "LC_CTYPE" "NIX_SSL_CERT_FILE" "NIX_PATH"))
-  (add-to-list 'exec-path-from-shell-variables var)))
 
 (provide 'dream-setup)
 ;;; dream-setup.el ends here.
