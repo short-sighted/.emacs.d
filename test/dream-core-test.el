@@ -431,6 +431,21 @@
     (run-hooks 'dream-test-trigger-a-hook)
     (run-hooks 'dream-test-trigger-a-hook)
     (should (= calls 1))
+    (should-not dream-test-transient-hook))
+  ;; Daemon sessions eagerly run every chain on their first frame, even when
+  ;; an interactive-session predicate would defer it.
+  (let ((dream-test-transient-hook nil)
+        (dream-test-trigger-a-hook nil)
+        (server-after-make-frame-hook nil)
+        (after-init-time (current-time))
+        (calls 0))
+    (add-hook 'dream-test-transient-hook (lambda () (cl-incf calls)))
+    (cl-letf (((symbol-function 'daemonp) (lambda () t)))
+      (dream-run-hook-on 'dream-test-transient-hook
+                         '(dream-test-trigger-a-hook)
+                         (lambda () nil))
+      (run-hooks 'server-after-make-frame-hook))
+    (should (= calls 1))
     (should-not dream-test-transient-hook)))
 
 (ert-deftest dream-hooks-transient-hook-waits-for-emacs-initialization ()

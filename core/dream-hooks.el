@@ -56,7 +56,8 @@ afterwards, and each chain attempts at most once even on error."
                            ;; Hooks may be let-bound to nil during internal
                            ;; batch operations; treat that as non-interactive.
                            (and (boundp hook) (symbol-value hook)))
-                       (or (null predicate)
+                       (or (daemonp)
+                           (null predicate)
                            (funcall predicate)))
               (setq running t)
               (dream-run-hooks hook-var)
