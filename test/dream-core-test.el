@@ -327,12 +327,21 @@
     (should (null value))))
 
 (ert-deftest dream-extensions-load-at-declared-boundaries ()
-  (when (featurep 'dream-eldoc)
-    (unload-feature 'dream-eldoc t))
   (require 'init-lang)
-  (should-not (featurep 'dream-flymake))
+  (when (featurep 'dream-eldoc)
+    ;; `global-eldoc-mode' turns `eldoc-mode' on in any buffer that
+    ;; changes major mode, including buffers ERT visits while printing
+    ;; an earlier test's failure, and that consumes the one-shot
+    ;; trigger registered by init-lang-programming.  Reload the unit
+    ;; so the declared wiring under test is armed again.
+    (unload-feature 'dream-eldoc t)
+    (load (expand-file-name "lisp/lang/init-lang-programming.el"
+                            user-emacs-directory)
+          nil t))
   (should (featurep 'eldoc))
   (should-not (featurep 'dream-eldoc))
+  (unless (featurep 'flymake)
+    (should-not (featurep 'dream-flymake)))
   (require 'flymake)
   (should (featurep 'dream-flymake))
   (should (fboundp 'dream-flymake-next-error))
