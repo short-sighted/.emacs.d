@@ -1,6 +1,7 @@
 ;;; dream-startup.el --- Startup policy for Dream Emacs. -*- lexical-binding: t; -*-
 
 (require 'dream-paths)
+(require 'dream-hooks)
 (require 'cl-lib)
 
 (cl-eval-when (compile)
@@ -9,7 +10,6 @@
   (require 'comp-run)
   (require 'once-incrementally))
 
-(defvar on-init-ui-hook nil)
 (defvar dream-startup--incremental-loading-started nil)
 
 (defconst dream-build-manifest-schema 1)
@@ -96,7 +96,7 @@
 (defun dream-startup-arm-incremental-loading (&optional daemon)
   "Start incremental loading, waiting for UI when DAEMON is non-nil."
   (if daemon
-      (add-hook 'on-init-ui-hook #'dream-startup--start-incremental-loading -100)
+      (add-hook 'dream-init-ui-hook #'dream-startup--start-incremental-loading -100)
     (dream-startup--start-incremental-loading)))
 
 (defun dream-startup--quiet-incremental-loading (function &rest args)

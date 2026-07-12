@@ -14,6 +14,7 @@
 (let ((file-name-handler-alist nil))
   ;; Core
   (require 'dream-lib)
+  (require 'dream-hooks)
   (require 'dream-setup)
 
   ;; Editor

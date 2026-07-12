@@ -35,7 +35,7 @@
       (add-to-list 'exec-path-from-shell-variables variable))
     (exec-path-from-shell-initialize)))
 
-(add-hook 'on-init-ui-hook #'dream-tools-initialize-shell-environment -80)
+(add-hook 'dream-init-ui-hook #'dream-tools-initialize-shell-environment -80)
 
 (setup clutch
   (:set clutch-connect-timeout-seconds 10

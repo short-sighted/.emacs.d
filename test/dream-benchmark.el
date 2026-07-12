@@ -33,7 +33,7 @@
               (load (expand-file-name "init.el" user-emacs-directory) nil t))))
      (setq first-input
            (dream-benchmark--elapsed
-            (lambda () (run-hooks 'on-first-input-hook))))
+            (lambda () (run-hooks 'dream-first-input-hook))))
      (setq first-prog
            (dream-benchmark--elapsed
             (lambda ()

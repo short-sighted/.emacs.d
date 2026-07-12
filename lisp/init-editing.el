@@ -90,10 +90,10 @@
         recentf-max-saved-items 50
         recentf-save-file dream-recentf-file))
 
-(add-hook 'on-first-input-hook #'delete-selection-mode -90)
-(add-hook 'on-first-file-hook #'recentf-mode -90)
-(add-hook 'on-first-file-hook #'global-auto-revert-mode -80)
-(add-hook 'on-first-buffer-hook #'global-so-long-mode -90)
+(add-hook 'dream-first-input-hook #'delete-selection-mode -90)
+(add-hook 'dream-first-file-hook #'recentf-mode -90)
+(add-hook 'dream-first-file-hook #'global-auto-revert-mode -80)
+(add-hook 'dream-first-buffer-hook #'global-so-long-mode -90)
 (add-hook 'prog-mode-hook #'hs-minor-mode)
 
 (with-eval-after-load 'hideshow

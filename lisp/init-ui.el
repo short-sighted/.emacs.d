@@ -82,7 +82,7 @@
   (pixel-scroll-precision-mode 1)
   (dream-ui-apply-fonts))
 
-(add-hook 'on-init-ui-hook #'dream-ui-initialize)
+(add-hook 'dream-init-ui-hook #'dream-ui-initialize)
 (add-hook 'server-after-make-frame-hook #'dream-ui-apply-fonts)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 (add-hook 'text-mode-hook #'display-line-numbers-mode)

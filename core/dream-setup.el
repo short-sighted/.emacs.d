@@ -9,7 +9,6 @@
         '(:once-x-require :require-once
           :once-require-incrementally :iload)))
 (require 'once-setup)
-(require 'on)
 
 
 (setup-define :hooks

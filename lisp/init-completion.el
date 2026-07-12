@@ -14,7 +14,7 @@
 (setup vertico
   (:iload -80 savehist orderless -70 vertico)
   (:once (list :hooks
-               (list :hook 'on-first-input-hook :depth -70))
+               (list :hook 'dream-first-input-hook :depth -70))
     (vertico-mode 1))
   (:set vertico-cycle t
         vertico-count 17)
@@ -25,7 +25,7 @@
       (add-to-list 'savehist-additional-variables 'vertico-repeat-history))))
 
 (setup orderless
-  (:require-once (list :hooks 'on-first-input-hook) 'orderless)
+  (:require-once (list :hooks 'dream-first-input-hook) 'orderless)
   (:set completion-styles '(orderless basic)
         completion-category-defaults nil
         completion-category-overrides
@@ -47,7 +47,7 @@
   (:hook-into vertico-mode))
 
 (setup corfu
-  (:hooks on-first-input-hook global-corfu-mode)
+  (:hooks dream-first-input-hook global-corfu-mode)
   (:set corfu-cycle t
         corfu-auto t
         corfu-count 16
