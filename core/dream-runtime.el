@@ -133,8 +133,9 @@
     (dolist (pair (plist-get snapshot :variables))
       (setenv (car pair) (cdr pair)))
     (when-let* ((path (getenv "PATH")))
-      (setq exec-path (append (parse-colon-path path) (list exec-directory)))
-      (set-default 'eshell-path-env path))
+      ;; Eshell 31 falls back to `exec-path' (`eshell-get-path'), so no
+      ;; obsolete `eshell-path-env' write is needed.
+      (setq exec-path (append (parse-colon-path path) (list exec-directory))))
     t))
 
 (defun dream-environment-refresh ()

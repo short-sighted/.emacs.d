@@ -18,14 +18,15 @@
       fast-but-imprecise-scrolling t
       ffap-machine-p-known 'reject
       frame-inhibit-implied-resize t
-      idle-update-delay 1.0
       inhibit-compacting-font-caches t
-      pgtk-wait-for-event-timeout 0.001
-      read-process-output-max (* 64 1024)
+      read-process-output-max (* 1024 1024)
       process-adaptive-read-buffering nil
       redisplay-skip-fontification-on-input t
       initial-major-mode 'fundamental-mode
       initial-scratch-message nil)
+
+(when (boundp 'pgtk-wait-for-event-timeout)
+  (setq pgtk-wait-for-event-timeout 0.001))
 
 (setq-default cursor-in-non-selected-windows nil)
 (setq highlight-nonselected-windows nil)

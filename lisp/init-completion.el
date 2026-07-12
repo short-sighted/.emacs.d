@@ -58,8 +58,7 @@
         corfu-on-exact-match nil
         corfu-quit-at-boundary 'separator
         corfu-quit-no-match 'separator
-        corfu-margin-formatters '(nerd-icons-corfu-formatter)
-        tab-always-indent 'complete)
+        corfu-margin-formatters '(nerd-icons-corfu-formatter))
   (:once (list :packages 'corfu)
     (require 'corfu-history)
     (require 'corfu-popupinfo)

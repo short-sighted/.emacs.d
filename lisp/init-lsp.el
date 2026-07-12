@@ -10,8 +10,7 @@
   (require 'lsp-completion)
   (require 'consult-lsp))
 
-(setq read-process-output-max (* 1024 1024)
-      lsp-session-file dream-lsp-session-file
+(setq lsp-session-file dream-lsp-session-file
       lsp-server-install-dir dream-lsp-server-directory
       lsp-keep-workspace-alive nil
       lsp-log-io nil

@@ -41,7 +41,7 @@
 
 (setq-default indent-tabs-mode nil
               tab-width 4
-              tab-always-indent nil)
+              tab-always-indent 'complete)
 
 (add-to-list 'auto-mode-alist '("/LICENSE\\'" . text-mode))
 

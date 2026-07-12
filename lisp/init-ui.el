@@ -40,8 +40,5 @@
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 (add-hook 'text-mode-hook #'display-line-numbers-mode)
 
-(unless (daemonp)
-  (advice-add #'display-startup-echo-area-message :override #'ignore))
-
 (provide 'init-ui)
 ;;; init-ui.el ends here.
