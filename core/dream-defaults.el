@@ -50,7 +50,7 @@
       vc-follow-symlinks t
       find-file-suppress-same-file-warnings t)
 
-(defun dream-defaults-create-missing-directories ()
+(defun dream-defaults--create-missing-directories ()
   "Offer to create the parent directories of a nonexistent visited file."
   (unless (file-remote-p buffer-file-name)
     (let ((parent (file-name-directory buffer-file-name)))
@@ -60,7 +60,7 @@
            (progn (make-directory parent 'parents) t)))))
 
 (add-hook 'find-file-not-found-functions
-          #'dream-defaults-create-missing-directories)
+          #'dream-defaults--create-missing-directories)
 
 (defun dream-defaults--quiet-autosave-notice (function &rest args)
   "Call FUNCTION with ARGS without pausing on auto-save-data notices."
@@ -155,11 +155,11 @@
 ;;; Universal escape
 
 (defvar dream-escape-hook nil
-  "Hook run by `dream/escape' before falling back to `keyboard-quit'.
+  "Hook run by `dream-escape' before falling back to `keyboard-quit'.
 When any function returns non-nil, the remaining functions and the
 fallback are skipped.")
 
-(defun dream/escape (&optional interactive)
+(defun dream-escape (&optional interactive)
   "Quit the minibuffer, run `dream-escape-hook', or `keyboard-quit'."
   (interactive (list 'interactive))
   (let ((inhibit-quit t))
@@ -174,7 +174,7 @@ fallback are skipped.")
              (when interactive
                (setq this-command 'keyboard-quit)))))))
 
-(keymap-global-set "<remap> <keyboard-quit>" #'dream/escape)
+(keymap-global-set "<remap> <keyboard-quit>" #'dream-escape)
 
 (provide 'dream-defaults)
 ;;; dream-defaults.el ends here.

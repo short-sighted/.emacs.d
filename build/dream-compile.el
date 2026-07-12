@@ -2,6 +2,7 @@
 
 (require 'cl-lib)
 (require 'dream-paths)
+(require 'dream-runtime)
 (require 'dream-startup)
 
 (cl-eval-when (compile)
@@ -9,12 +10,13 @@
   (require 'dream-autoloads-build))
 
 (setenv "LSP_USE_PLISTS" "true")
-(startup-redirect-eln-cache dream-eln-directory)
 
 (defconst dream-build-core-files
   '("core/dream-paths.el"
-    "core/dream-lib.el"
+    "core/dream-core.el"
+    "core/dream-runtime.el"
     "core/dream-hooks.el"
+    "core/dream-fonts.el"
     "core/dream-defaults.el"
     "core/dream-startup.el"
     "core/dream-autoloads.el"
@@ -70,6 +72,11 @@
      (append core owned (list init) (dream-build-tool-files)))
     (append core owned (list init))))
 
+(defun dream-build-manifest-source-files ()
+  "Return every source file that defines the runtime/build contract."
+  (cons (expand-file-name "early-init.el" user-emacs-directory)
+        (append (dream-build-config-files) (dream-build-tool-files))))
+
 (defun dream-build--source-entry (file)
   "Return the manifest entry for source FILE."
   (list (file-relative-name file user-emacs-directory)
@@ -88,10 +95,11 @@
         :native (and config-native t)
         :config-native (and config-native t)
         :packages-native (and packages-native t)
+        :trampolines (dream-runtime-trampoline-contract)
+        :environment (dream-runtime-environment-identity)
         :generated-at (current-time)
         :sources (mapcar #'dream-build--source-entry
-                         (append (dream-build-config-files)
-                                 (dream-build-tool-files)))))
+                         (dream-build-manifest-source-files))))
 
 (defun dream-build-write-manifest (&optional config-native packages-native)
   "Atomically write the build manifest for the two native build modes."
@@ -141,11 +149,29 @@ When STRICT is non-nil, turn byte compiler warnings into errors."
 
 (defun dream-build-clean-config-native ()
   "Delete native artifacts belonging to current owned configuration files."
-  (dolist (source (dream-build-config-files))
-    (let ((eln (comp-el-to-eln-filename source)))
-      (when (and (file-exists-p eln)
-                 (file-in-directory-p eln dream-eln-directory))
-        (delete-file eln)))))
+  (when (dream-runtime-native-comp-available-p)
+    (dolist (source (dream-build-config-files))
+      (let ((eln (comp-el-to-eln-filename source)))
+        (when (and (file-exists-p eln)
+                   (file-in-directory-p eln dream-eln-directory))
+          (delete-file eln))))))
+
+(defun dream-build-clean-stale-bytecode ()
+  "Delete owned ELC files whose corresponding source no longer exists."
+  (let (deleted)
+    (dolist (name '("core" "lib" "lisp" "build"))
+      (let ((directory (expand-file-name name user-emacs-directory)))
+        (when (file-directory-p directory)
+          (dolist (bytecode
+                   (directory-files-recursively directory "\\.elc\\'"))
+            (when (and
+                   (string-match-p "\\`\\(?:dream-\\|init-\\)"
+                                   (file-name-nondirectory bytecode))
+                   (not (file-exists-p
+                         (string-remove-suffix "c" bytecode))))
+              (delete-file bytecode)
+              (push bytecode deleted))))))
+    (nreverse deleted)))
 
 (defun dream-build--isolation-form (file destination)
   "Return the form a fresh Emacs evaluates to strictly compile FILE.
@@ -232,8 +258,30 @@ Needs the drones on `load-path' (check-declare resolves FILE via
   (require 'dream-autoloads-build)
   (let ((source (dream-autoloads-generate)))
     ;; The aggregate consists of registration forms; native code adds no value.
-    (dream-build--compile-file source nil nil)
+    (dream-with-runtime-compilation
+      (dream-build--compile-file source nil nil))
     source))
+
+(defun dream-build-trampolines ()
+  "Prebuild every primitive trampoline required by the runtime contract."
+  (when-let* ((trampolines (dream-runtime-trampoline-contract)))
+    (require 'comp)
+    (make-directory (dream-runtime-trampoline-directory) t)
+    (let ((native-comp-enable-subr-trampolines
+           (dream-runtime-trampoline-directory)))
+      (dream-with-runtime-compilation
+        (dolist (primitive trampolines)
+          (unless (file-readable-p (dream-runtime-trampoline-file primitive))
+            (comp-trampoline-compile primitive)))))
+    (unless (dream-runtime-trampolines-current-p)
+      (error "Required native trampolines were not produced"))
+    trampolines))
+
+(defun dream-build-runtime-artifacts ()
+  "Refresh all artifacts that normal interactive use treats as read-only."
+  (when (eq system-type 'darwin)
+    (dream-runtime-write-environment-snapshot))
+  (dream-build-trampolines))
 
 (cl-defun dream-build-config
     (&optional config-native (packages-native nil packages-native-supplied-p))
@@ -247,12 +295,15 @@ PACKAGES-NATIVE records the Borg package artifact policy in the manifest."
   (add-to-list 'load-path (expand-file-name "core" user-emacs-directory))
   (add-to-list 'load-path (expand-file-name "build" user-emacs-directory))
   (dream-paths-add-load-paths)
+  (dream-build-clean-stale-bytecode)
+  (dream-build-runtime-artifacts)
   (unless config-native
     (dream-build-clean-config-native))
-  (dolist (file (dream-build-config-files))
-    (dream-build--compile-file file config-native t))
-  (dolist (file (dream-build-tool-files))
-    (dream-build--compile-file file nil t))
+  (dream-with-runtime-compilation
+    (dolist (file (dream-build-config-files))
+      (dream-build--compile-file file config-native t))
+    (dolist (file (dream-build-tool-files))
+      (dream-build--compile-file file nil t)))
   (dream-build--verify-config-artifacts config-native)
   (dream-build-write-manifest config-native packages-native))
 
@@ -262,12 +313,9 @@ PACKAGES-NATIVE records the Borg package artifact policy in the manifest."
   (dream-build-config dream-build-default-config-native native))
 
 (defun dream-build-refresh-autoloads ()
-  "Refresh aggregate autoload bytecode after an individual drone build."
-  (let* ((old-manifest (dream-startup-read-manifest))
-         (config-native (plist-get old-manifest :config-native))
-         (packages-native (plist-get old-manifest :packages-native)))
-    (dream-build-autoloads)
-    (dream-build-write-manifest config-native packages-native)))
+  "Refresh aggregate autoload bytecode after an individual drone build.
+Do not rewrite the config manifest because owned ELC files were not rebuilt."
+  (dream-build-autoloads))
 
 (provide 'dream-compile)
 ;;; dream-compile.el ends here.

@@ -1,4 +1,4 @@
-;;; dream-lib.el --- Small helpers for Dream Emacs. -*- lexical-binding: t; -*-
+;;; dream-core.el --- Foundational APIs for Dream Emacs. -*- lexical-binding: t; -*-
 
 (require 'cl-lib)
 (require 'subr-x)
@@ -8,6 +8,9 @@
 (define-error 'dream-error "An unexpected Dream Emacs error")
 (define-error 'dream-hook-error "Error in a Dream Emacs startup hook"
               'dream-error)
+(define-error 'dream-runtime-compilation-error
+              "Runtime artifact compilation is disabled" 'dream-error)
+(define-error 'dream-font-error "Configured font is unavailable" 'dream-error)
 
 ;;; Logging
 
@@ -30,7 +33,7 @@
 2 -- Warnings and notices.
 3 -- Debug info, warnings, and notices.")
 
-(defun dream--log (level text &rest args)
+(defun dream-core--log (level text &rest args)
   "Emit TEXT formatted with ARGS at LEVEL into *Messages*.
 Levels above `dream-log-level' stay out of the echo area."
   (let ((inhibit-message (if noninteractive
@@ -54,19 +57,19 @@ is disabled."
     `(when (and (not dream-inhibit-log)
                 (or (not noninteractive)
                     (<= ,level dream-log-level)))
-       (dream--log ,level ,message ,@args))))
+       (dream-core--log ,level ,message ,@args))))
 
-(defun dream-unquote (expression)
+(defun dream-core--unquote (expression)
   "Return EXPRESSION without quote or function wrappers."
   (declare (pure t) (side-effect-free t))
   (while (memq (car-safe expression) '(quote function))
     (setq expression (cadr expression)))
   expression)
 
-(defun dream--resolve-hook-forms (hooks)
+(defun dream-core--resolve-hook-forms (hooks)
   "Convert unquoted modes in HOOKS to hook symbols."
   (declare (pure t) (side-effect-free t))
-  (let ((items (ensure-list (dream-unquote hooks))))
+  (let ((items (ensure-list (dream-core--unquote hooks))))
     (if (eq (car-safe hooks) 'quote)
         items
       (mapcar (lambda (hook)
@@ -75,15 +78,11 @@ is disabled."
                   (intern (format "%s-hook" hook))))
               items))))
 
-(defun dream-font-available-p (font-name)
-  "Return non-nil when FONT-NAME is available."
-  (find-font (font-spec :name font-name)))
-
 (defmacro dream-add-hook (hooks &rest rest)
   "Add functions or forms in REST to HOOKS.
 REST accepts :append, :local, :remove and :depth N before its functions."
   (declare (indent 1) (debug t))
-  (let ((hook-forms (dream--resolve-hook-forms hooks))
+  (let ((hook-forms (dream-core--resolve-hook-forms hooks))
         functions definitions append local remove depth)
     (while (keywordp (car rest))
       (pcase (pop rest)
@@ -112,31 +111,23 @@ REST accepts :append, :local, :remove and :depth N before its functions."
                 `(remove-hook hook function ,local)
               `(add-hook hook function ,(or depth append) ,local)))))))
 
-(defmacro quiet!! (&rest body)
-  "Evaluate BODY while suppressing messages and load/write notifications."
+(defmacro dream-with-suppressed-output (&rest body)
+  "Evaluate BODY while suppressing messages and standard output."
   (declare (indent 0))
   `(if init-file-debug
        (progn ,@body)
      (let ((inhibit-message t)
            (message-log-max nil)
            (standard-output #'ignore)
-           (original-load (symbol-function 'load))
-           (original-write-region (symbol-function 'write-region)))
-       (cl-letf (((symbol-function 'message) #'ignore)
-                 ((symbol-function 'load)
-                  (lambda (file &optional noerror _nomessage nosuffix must-suffix)
-                    (funcall original-load file noerror t nosuffix must-suffix)))
-                 ((symbol-function 'write-region)
-                  (lambda (start end filename &optional append visit lockname mustbenew)
-                    (funcall original-write-region start end filename append
-                             (or visit 'no-message) lockname mustbenew))))
-         ,@body))))
+           (load-verbose nil)
+           (save-silently t))
+       ,@body)))
 
-(defmacro quiet! (&rest body)
+(defmacro dream-with-suppressed-messages (&rest body)
   "Evaluate BODY without echo-area output."
   (declare (indent 0))
   `(if noninteractive
-       (quiet!! ,@body)
+       (dream-with-suppressed-output ,@body)
      (let ((inhibit-message t) (save-silently t))
        ,@body)))
 
@@ -181,7 +172,7 @@ or more of these definition forms:
 
 ;;; Hook-local variables
 
-(defun dream--setq-hook-forms (hooks rest &optional singles)
+(defun dream-core--setq-hook-forms (hooks rest &optional singles)
   "Return (VAR VAL HOOK FN) tuples for `dream-setq-hook' over HOOKS.
 REST is the flat [SYM VAL]... list, or bare symbols when SINGLES."
   (unless (or singles (zerop (% (length rest) 2)))
@@ -193,7 +184,7 @@ REST is the flat [SYM VAL]... list, or bare symbols when SINGLES."
                                    (cons (pop args) (pop args)))
                                  vars))
                          (nreverse vars))
-           for hook in (dream--resolve-hook-forms hooks)
+           for hook in (dream-core--resolve-hook-forms hooks)
            for mode = (string-remove-suffix "-hook" (symbol-name hook))
            append
            (cl-loop for (var . val) in vars
@@ -206,7 +197,7 @@ REST is the flat [SYM VAL]... list, or bare symbols when SINGLES."
 \(fn HOOKS &rest [SYM VAL]...)"
   (declare (indent 1))
   (macroexp-progn
-   (cl-loop for (var val hook fn) in (dream--setq-hook-forms hooks var-vals)
+   (cl-loop for (var val hook fn) in (dream-core--setq-hook-forms hooks var-vals)
             collect `(defun ,fn (&rest _) (setq-local ,var ,val))
             collect `(add-hook ',hook #',fn -90))))
 
@@ -216,7 +207,7 @@ REST is the flat [SYM VAL]... list, or bare symbols when SINGLES."
   (declare (indent 1))
   (macroexp-progn
    (cl-loop for (_var _val hook fn)
-            in (dream--setq-hook-forms hooks vars 'singles)
+            in (dream-core--setq-hook-forms hooks vars 'singles)
             collect `(remove-hook ',hook #',fn))))
 
 ;;; Advice definers
@@ -250,5 +241,5 @@ REST is the flat [SYM VAL]... list, or bare symbols when SINGLES."
        (dolist (target (cdr targets))
          (advice-remove target #',symbol)))))
 
-(provide 'dream-lib)
-;;; dream-lib.el ends here.
+(provide 'dream-core)
+;;; dream-core.el ends here.

@@ -23,7 +23,7 @@
       lsp-headerline-breadcrumb-enable nil)
 
 (setup lsp-mode
-  (:iload 0 dash f ht lv markdown-mode spinner s lsp-protocol 20 lsp-mode)
+  (:iload 0 dash f ht lv markdown-mode spinner s lsp-protocol)
   (:autoload lsp-install-server)
   (:hook lsp-completion-mode))
 

@@ -1,6 +1,7 @@
 ;;; init-lang-programming.el --- Programming foundations. -*- lexical-binding: t; -*-
 
 (require 'dream-paths)
+(require 'dream-runtime)
 (require 'dream-setup)
 
 (cl-eval-when (compile)
@@ -28,10 +29,11 @@
              yas-visit-snippet-file yas-activate-extra-mode
              yas-deactivate-extra-mode yas-maybe-expand-abbrev-key-filter))
 
-(defun dream-diagnostics-elisp-load-path (function &rest args)
+(defun dream-programming--with-elisp-load-path (function &rest args)
   "Call Elisp Flymake FUNCTION with the full configured load path."
   (let ((elisp-flymake-byte-compile-load-path
-         (append elisp-flymake-byte-compile-load-path load-path)))
+         (append elisp-flymake-byte-compile-load-path load-path))
+        (dream-runtime-compilation-allowed t))
     (apply function args)))
 
 (setup flymake
@@ -41,7 +43,7 @@
         flymake-fringe-indicator-position 'right-fringe
         flymake-margin-indicator-position 'right-margin)
   (:advice elisp-flymake-byte-compile
-           :around dream-diagnostics-elisp-load-path)
+           :around dream-programming--with-elisp-load-path)
   (:also-load dream-flymake))
 
 (provide 'init-lang-programming)

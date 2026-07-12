@@ -21,6 +21,8 @@
   (expand-file-name "autoloads-state.el" dream-autoloads-directory))
 (defconst dream-build-manifest-file
   (expand-file-name "build-manifest.el" dream-cache-directory))
+(defconst dream-environment-file
+  (expand-file-name "environment.el" dream-state-directory))
 (defconst dream-eln-directory
   (file-name-as-directory (expand-file-name "eln" dream-cache-directory)))
 

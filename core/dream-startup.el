@@ -2,6 +2,7 @@
 
 (require 'dream-paths)
 (require 'dream-hooks)
+(require 'dream-runtime)
 (require 'cl-lib)
 
 (cl-eval-when (compile)
@@ -12,13 +13,9 @@
 
 (defvar dream-startup--incremental-loading-started nil)
 
-(defconst dream-build-manifest-schema 1)
+(defconst dream-build-manifest-schema 2)
 (defconst dream-startup-gc-cons-threshold (* 64 1024 1024))
 (defconst dream-startup-gc-cons-percentage 0.1)
-
-(defun dream-startup-disable-runtime-compilation ()
-  "Disable implicit native compilation for the current session."
-  (setq native-comp-jit-compilation nil))
 
 (defun dream-startup-restore-gc ()
   "Restore the steady-state garbage collector settings."
@@ -27,22 +24,32 @@
 
 (defun dream-startup-native-version ()
   "Return the native compilation ABI identifier for this Emacs."
-  (if (boundp 'comp-native-version-dir)
+  (if (and (dream-runtime-native-comp-available-p)
+           (boundp 'comp-native-version-dir))
       comp-native-version-dir
     "none"))
 
 (defun dream-startup-manifest-compatible-p (manifest)
   "Return non-nil when MANIFEST is usable by the running Emacs."
-  (and (equal (plist-get manifest :schema) dream-build-manifest-schema)
+  (and (proper-list-p manifest)
+       (equal (plist-get manifest :schema) dream-build-manifest-schema)
        (equal (plist-get manifest :emacs-version) emacs-version)
+       (equal (plist-get manifest :system-configuration)
+              system-configuration)
        (equal (plist-get manifest :native-version)
               (dream-startup-native-version))
-       (equal (file-name-as-directory
-               (expand-file-name (plist-get manifest :eln-directory)
-                                 user-emacs-directory))
-              dream-eln-directory)
+       (let ((directory (plist-get manifest :eln-directory)))
+         (and (stringp directory)
+              (equal (file-name-as-directory
+                      (expand-file-name directory user-emacs-directory))
+                     dream-eln-directory)))
        (equal (plist-get manifest :lsp-use-plists)
-              (getenv "LSP_USE_PLISTS"))))
+              (getenv "LSP_USE_PLISTS"))
+       (equal (plist-get manifest :trampolines)
+              (dream-runtime-trampoline-contract))
+       (equal (plist-get manifest :environment)
+              (dream-runtime-environment-identity))
+       (dream-runtime-trampolines-current-p)))
 
 (defun dream-startup-read-manifest ()
   "Read the build manifest, returning nil when it is absent or malformed."
@@ -61,12 +68,22 @@
 
 (defun dream-startup-manifest-sources-current-p (manifest)
   "Return non-nil when all owned sources recorded in MANIFEST are unchanged."
-  (cl-every
-   (lambda (entry)
-     (let ((file (expand-file-name (car entry) user-emacs-directory)))
-       (and (file-readable-p file)
-            (equal (cadr entry) (dream-startup--file-hash file)))))
-   (plist-get manifest :sources)))
+  (let ((sources (plist-get manifest :sources)))
+    (and
+     (consp sources)
+     (proper-list-p sources)
+     (cl-every
+      (lambda (entry)
+        (and (proper-list-p entry)
+             (= (length entry) 2)
+             (stringp (car entry))
+             (stringp (cadr entry))
+             (let ((file (expand-file-name (car entry)
+                                           user-emacs-directory)))
+               (and (file-readable-p file)
+                    (equal (cadr entry)
+                           (dream-startup--file-hash file))))))
+      sources))))
 
 (defun dream-startup-check-manifest ()
   "Warn when build artifacts were produced for a different runtime."
@@ -74,7 +91,7 @@
     (cond
      ((null manifest)
       (display-warning 'dream-build
-                       "Build manifest is missing; run `make native'."
+                       "Build manifest is missing; run `make config-build'."
                        :warning))
      ((not (dream-startup-manifest-compatible-p manifest))
       (display-warning
@@ -106,7 +123,6 @@
 
 (defun dream-startup-initialize ()
   "Finalize Dream startup policy after setup.el and once.el are available."
-  (dream-startup-disable-runtime-compilation)
   (setq once-idle-timer 1.5
         once-incremental-run-interval 1.5)
   (unless (advice-member-p #'dream-startup--quiet-incremental-loading

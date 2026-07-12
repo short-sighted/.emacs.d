@@ -14,10 +14,13 @@ bootstrap-borg:
 		@cd $(DRONES_DIR)/borg; git symbolic-ref HEAD refs/heads/main
 		@cd $(DRONES_DIR)/borg; git reset --hard HEAD
 
-.PHONY: autoloads config-build config-native check check-isolated check-declare smoke benchmark-baseline benchmark
+.PHONY: autoloads runtime-artifacts config-build config-native check check-isolated check-declare runtime-no-compile smoke benchmark-baseline benchmark
 
 autoloads:
 	$(Q)$(EMACS_BATCH) $(BORG_ARGS) --funcall dream-build-autoloads 2>&1
+
+runtime-artifacts:
+	$(Q)$(EMACS_BATCH) $(BORG_ARGS) --funcall dream-build-runtime-artifacts 2>&1
 
 config-build:
 	$(Q)$(EMACS_BATCH) $(BORG_ARGS) --eval "(dream-build-config nil)" 2>&1
@@ -33,6 +36,9 @@ check-isolated:
 
 check-declare:
 	$(Q)$(EMACS_BATCH) $(BORG_ARGS) --funcall dream-build-check-declare 2>&1
+
+runtime-no-compile:
+	$(Q)$(EMACS) -Q --batch -l test/dream-runtime-smoke.el
 
 smoke:
 	$(Q)$(EMACS) -Q --batch -l early-init.el -l init.el \

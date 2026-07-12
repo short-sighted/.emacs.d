@@ -1,7 +1,7 @@
 ;;; init-editing.el --- Editing and persistence policy. -*- lexical-binding: t; -*-
 
 (require 'dream-paths)
-(require 'dream-lib)
+(require 'dream-core)
 (require 'dream-setup)
 
 (cl-eval-when (compile)
@@ -45,12 +45,12 @@
 
 (add-to-list 'auto-mode-alist '("/LICENSE\\'" . text-mode))
 
-(defun dream-editing-ensure-autosave-directory ()
+(defun dream-editing--ensure-autosave-directory ()
   "Ensure the private autosave directory exists."
   (with-file-modes #o700
     (make-directory auto-save-list-file-prefix t)))
 
-(defun dream-editing-guess-mode-after-save ()
+(defun dream-editing--guess-mode-after-save ()
   "Recompute the major mode after saving a fundamental-mode file."
   (when (eq major-mode 'fundamental-mode)
     (let ((buffer (or (buffer-base-buffer) (current-buffer))))
@@ -58,16 +58,16 @@
                  (eq buffer (window-buffer (selected-window))))
         (set-auto-mode)))))
 
-(add-hook 'auto-save-hook #'dream-editing-ensure-autosave-directory)
-(add-hook 'after-save-hook #'dream-editing-guess-mode-after-save)
+(add-hook 'auto-save-hook #'dream-editing--ensure-autosave-directory)
+(add-hook 'after-save-hook #'dream-editing--guess-mode-after-save)
 
-(defun dream-editing-savehist-unpropertize ()
+(defun dream-editing--savehist-unpropertize ()
   "Strip text properties before persisting the kill ring."
   (setq kill-ring
         (mapcar #'substring-no-properties
                 (cl-remove-if-not #'stringp kill-ring))))
 
-(defun dream-editing-savehist-clean-registers ()
+(defun dream-editing--savehist-clean-registers ()
   "Keep only printable registers in savehist's temporary buffer."
   (setq-local register-alist
               (cl-remove-if-not #'savehist-printable register-alist)))
@@ -81,8 +81,8 @@
           search-ring regexp-search-ring))
   (:once (list :before 'vertico-mode) (savehist-mode 1))
   (:when-loaded
-    (add-hook 'savehist-save-hook #'dream-editing-savehist-unpropertize)
-    (add-hook 'savehist-save-hook #'dream-editing-savehist-clean-registers)))
+    (add-hook 'savehist-save-hook #'dream-editing--savehist-unpropertize)
+    (add-hook 'savehist-save-hook #'dream-editing--savehist-clean-registers)))
 
 (setup recentf
   (:set recentf-auto-cleanup 'never

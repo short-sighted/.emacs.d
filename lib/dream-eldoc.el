@@ -2,7 +2,7 @@
 
 (require 'eldoc)
 
-(defun dream-eldoc-display-buffer (buffer alist)
+(defun dream-eldoc--display-buffer (buffer alist)
   "Display BUFFER in a bottom side window using action ALIST."
   (when-let* ((window (display-buffer-in-side-window buffer alist)))
     (with-current-buffer buffer
@@ -12,7 +12,7 @@
 (add-to-list
  'display-buffer-alist
  '("\\`\\*eldoc\\(?: for .+\\)?\\*\\'"
-   (dream-eldoc-display-buffer)
+   (dream-eldoc--display-buffer)
    (side . bottom)
    (slot . 0)
    (window-height . 0.33)))

@@ -10,7 +10,6 @@
   (require 'magit))
 
 (setup magit
-  (:iload compat with-editor eieio transient git-commit)
   (:set magit-auto-revert-mode nil)
   (:when-loaded
     (magit-add-section-hook 'magit-status-sections-hook

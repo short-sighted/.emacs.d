@@ -69,13 +69,13 @@
     (with-eval-after-load 'savehist
       (add-to-list 'savehist-additional-variables 'corfu-history))))
 
-(defun dream-completion-add-file-capf ()
+(defun dream-completion--add-file-capf ()
   "Add file completion to the current programming buffer."
   (add-hook 'completion-at-point-functions #'cape-file -10 t))
 
-(add-hook 'prog-mode-hook #'dream-completion-add-file-capf)
+(add-hook 'prog-mode-hook #'dream-completion--add-file-capf)
 
-(defun dream-completion-advise-capf (function &rest wrappers)
+(defun dream-completion--advise-capf (function &rest wrappers)
   "Add each function in WRAPPERS around completion FUNCTION once."
   (dolist (wrapper wrappers)
     (unless (advice-member-p wrapper function)
@@ -83,20 +83,20 @@
 
 (once (list :packages 'lsp-completion)
   (lambda ()
-    (dream-completion-advise-capf
+    (dream-completion--advise-capf
      'lsp-completion-at-point
      #'cape-wrap-noninterruptible #'cape-wrap-nonexclusive)))
 (once (list :packages 'comint)
   (lambda ()
-    (dream-completion-advise-capf
+    (dream-completion--advise-capf
      'comint-completion-at-point #'cape-wrap-nonexclusive)))
 (once (list :packages 'eglot)
   (lambda ()
-    (dream-completion-advise-capf
+    (dream-completion--advise-capf
      'eglot-completion-at-point #'cape-wrap-nonexclusive)))
 (once (list :packages 'pcomplete)
   (lambda ()
-    (dream-completion-advise-capf
+    (dream-completion--advise-capf
      'pcomplete-completions-at-point #'cape-wrap-nonexclusive)))
 
 (provide 'init-completion)

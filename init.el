@@ -7,14 +7,17 @@
 
 (dream-paths-initialize)
 
+(require 'dream-core)
+(require 'dream-runtime)
+(dream-runtime-initialize)
+(require 'dream-hooks)
+(require 'dream-fonts)
 (require 'dream-startup)
 (require 'dream-autoloads)
 (dream-autoloads-initialize)
 
 (let ((file-name-handler-alist nil))
   ;; Core
-  (require 'dream-lib)
-  (require 'dream-hooks)
   (require 'dream-setup)
   (require 'dream-defaults)
 
