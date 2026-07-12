@@ -1,4 +1,8 @@
 ;;; init.el --- Dream Emacs configuration entry point. -*- lexical-binding: t; -*-
+;;
+;;; Commentary:
+;;
+;;; Code:
 
 (eval-and-compile
   (add-to-list 'load-path (expand-file-name "core" user-emacs-directory))
