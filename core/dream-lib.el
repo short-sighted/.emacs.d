@@ -1,6 +1,60 @@
 ;;; dream-lib.el --- Small helpers for Dream Emacs. -*- lexical-binding: t; -*-
 
 (require 'cl-lib)
+(require 'subr-x)
+
+;;; Errors
+
+(define-error 'dream-error "An unexpected Dream Emacs error")
+(define-error 'dream-hook-error "Error in a Dream Emacs startup hook"
+              'dream-error)
+
+;;; Logging
+
+(defvar dream-inhibit-log (not (or noninteractive init-file-debug))
+  "If non-nil, suppress `dream-log' output completely.")
+
+(defvar dream-log-level
+  (if noninteractive
+      3
+    (if init-file-debug
+        (if-let* ((level (getenv-internal "DEBUG"))
+                  (level (if (string-empty-p level) 1 (string-to-number level)))
+                  ((not (zerop level))))
+            level
+          2)
+      0))
+  "Verbosity of `dream-log' calls.
+0 -- No logging at all.
+1 -- Only warnings.
+2 -- Warnings and notices.
+3 -- Debug info, warnings, and notices.")
+
+(defun dream--log (level text &rest args)
+  "Emit TEXT formatted with ARGS at LEVEL into *Messages*.
+Levels above `dream-log-level' stay out of the echo area."
+  (let ((inhibit-message (if noninteractive
+                             (not init-file-debug)
+                           (> level dream-log-level))))
+    (apply #'message
+           (propertize (concat "* %.06f: " text) 'face 'font-lock-doc-face)
+           (float-time (time-subtract (current-time) before-init-time))
+           args)))
+
+(defmacro dream-log (message &rest args)
+  "Log MESSAGE (a format string applied to ARGS) when logging is on.
+An integer in MESSAGE's position selects the level (default 2).
+Expands to a guarded call, so ARGS are not evaluated while logging
+is disabled."
+  (declare (debug t))
+  (let ((level (if (integerp message)
+                   (prog1 message
+                     (setq message (pop args)))
+                 2)))
+    `(when (and (not dream-inhibit-log)
+                (or (not noninteractive)
+                    (<= ,level dream-log-level)))
+       (dream--log ,level ,message ,@args))))
 
 (defun dream-unquote (expression)
   "Return EXPRESSION without quote or function wrappers."

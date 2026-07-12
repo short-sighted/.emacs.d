@@ -21,6 +21,8 @@
 (add-to-list 'load-path (expand-file-name "../lib" (file-name-directory load-file-name)))
 (add-to-list 'load-path (expand-file-name "../build" (file-name-directory load-file-name)))
 
+(require 'dream-lib)
+
 (ert-deftest dream-paths-use-cache-state-and-data-roots ()
   (require 'dream-paths)
   (should (equal dream-cache-directory
@@ -393,6 +395,25 @@
   (require 'init-lang-rust)
   (should (fboundp 'flymake-clippy-setup-backend))
   (should-not (featurep 'flymake-clippy)))
+
+(ert-deftest dream-error-hierarchy-is-catchable-as-dream-error ()
+  (require 'dream-lib)
+  (should (equal (get 'dream-hook-error 'error-conditions)
+                 '(dream-hook-error dream-error error)))
+  (should-error (signal 'dream-hook-error '(test)) :type 'dream-error))
+
+(ert-deftest dream-log-honors-inhibit-flag-and-level ()
+  (require 'dream-lib)
+  (let ((dream-inhibit-log t))
+    (should-not (dream-log "never emitted")))
+  (let ((dream-inhibit-log nil)
+        (dream-log-level 3)
+        (captured nil))
+    (cl-letf (((symbol-function 'message)
+               (lambda (format &rest args) (push (cons format args) captured))))
+      (dream-log 3 "visible %s" 'entry)
+      (dream-log 2 "also visible"))
+    (should (= 2 (length captured)))))
 
 (provide 'dream-core-test)
 ;;; dream-core-test.el ends here.
