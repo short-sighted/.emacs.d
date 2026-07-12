@@ -42,6 +42,17 @@
 (defconst dream-benchmark-directory
   (file-name-as-directory (expand-file-name "benchmarks" dream-state-directory)))
 
+(defconst dream-custom-file (expand-file-name "custom.el" dream-state-directory))
+(defconst dream-project-list-file
+  (expand-file-name "projects.eld" dream-state-directory))
+(defconst dream-nsm-file
+  (expand-file-name "network-security.eld" dream-state-directory))
+(defconst dream-url-directory
+  (file-name-as-directory (expand-file-name "url" dream-cache-directory)))
+(defconst dream-multisession-directory
+  (file-name-as-directory
+   (expand-file-name "multisession" dream-state-directory)))
+
 (defconst dream-epkg-directory
   (file-name-as-directory (expand-file-name "epkg" dream-data-directory)))
 (defconst dream-lsp-server-directory

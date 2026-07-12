@@ -1,10 +1,16 @@
 ;;; dream-defaults.el --- Better baseline defaults. -*- lexical-binding: t; -*-
 
+(require 'dream-paths)
 (require 'dream-hooks)
 
 (cl-eval-when (compile)
   ;; `gnutls-verify-error' and friends are not preloaded.
-  (require 'gnutls))
+  (require 'gnutls)
+  ;; State-file defcustoms live in their packages, none preloaded.
+  (require 'project)
+  (require 'nsm)
+  (require 'url)
+  (require 'multisession))
 
 ;; Rule 5: platform modifier variables live in each build's C code; the
 ;; other platform's compiler cannot require them from anywhere.
@@ -49,6 +55,17 @@
 (setq find-file-visit-truename t
       vc-follow-symlinks t
       find-file-suppress-same-file-warnings t)
+
+;;; State files
+
+;; Keep every state file out of the repository root, and never let
+;; Customize write into the strictly compiled init.el.  The custom
+;; file is deliberately not loaded: configuration stays declarative.
+(setq custom-file dream-custom-file
+      project-list-file dream-project-list-file
+      nsm-settings-file dream-nsm-file
+      url-configuration-directory dream-url-directory
+      multisession-directory dream-multisession-directory)
 
 (defun dream-defaults--create-missing-directories ()
   "Offer to create the parent directories of a nonexistent visited file."

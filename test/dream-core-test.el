@@ -1052,5 +1052,13 @@
       (should-not (dream-font-increase 1))
       (should (= dream-font-size 11.0)))))
 
+(ert-deftest dream-defaults-redirect-state-files-into-local ()
+  (require 'dream-defaults)
+  (dolist (value (list custom-file project-list-file nsm-settings-file
+                       url-configuration-directory multisession-directory))
+    (should (stringp value))
+    (should (string-prefix-p dream-local-directory
+                             (expand-file-name value)))))
+
 (provide 'dream-core-test)
 ;;; dream-core-test.el ends here.

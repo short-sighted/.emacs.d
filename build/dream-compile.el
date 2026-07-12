@@ -181,6 +181,11 @@ functions are known.  Bytecode goes below DESTINATION, leaving real
 artifacts untouched."
   `(progn
      (setq user-emacs-directory ,user-emacs-directory)
+     ;; Compile-time requires may run advice on primitives; without
+     ;; these the subprocess would JIT trampolines into the default
+     ;; eln-cache at the repository root.
+     (setq native-comp-jit-compilation nil
+           native-comp-enable-subr-trampolines nil)
      (setq load-path ',load-path)
      (when (file-readable-p ,dream-autoloads-file)
        (load ,(file-name-sans-extension dream-autoloads-file) nil t))
