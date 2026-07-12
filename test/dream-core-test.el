@@ -12,6 +12,8 @@
 (defvar rust-ts-mode-hook nil)
 (defvar dream-test-transient-hook nil)
 (defvar dream-test-trigger-a-hook nil)
+(defvar dream-test-mode-hook nil)
+(defvar dream-test-local-var)
 
 (add-to-list 'load-path (expand-file-name "../core" (file-name-directory load-file-name)))
 (add-to-list 'load-path (expand-file-name "../site-lisp/once" (file-name-directory load-file-name)))
@@ -482,6 +484,40 @@
     (should (eq 'quit (condition-case nil
                           (progn (dream/escape) nil)
                         (quit 'quit))))))
+
+(ert-deftest dream-setq-hook-sets-buffer-local-values ()
+  (require 'dream-lib)
+  (let ((dream-test-mode-hook nil))
+    (dream-setq-hook dream-test-mode dream-test-local-var 42)
+    (with-temp-buffer
+      (run-hooks 'dream-test-mode-hook)
+      (should (local-variable-p 'dream-test-local-var))
+      (should (= dream-test-local-var 42)))
+    (dream-unsetq-hook dream-test-mode dream-test-local-var)
+    (should-not dream-test-mode-hook)))
+
+(ert-deftest dream-defadvice-defines-and-attaches-advice ()
+  (require 'dream-lib)
+  (defun dream-test-advised () 'original)
+  (unwind-protect
+      (progn
+        (dream-defadvice dream-test-advice-wrapper (function &rest args)
+          "Wrap the return value."
+          :around #'dream-test-advised
+          (list 'wrapped (apply function args)))
+        (should (equal (dream-test-advised) '(wrapped original)))
+        (dream-undefadvice dream-test-advice-wrapper (function &rest args)
+          :around #'dream-test-advised)
+        (should (eq (dream-test-advised) 'original)))
+    (advice-remove 'dream-test-advised #'dream-test-advice-wrapper)))
+
+(ert-deftest dream-letf-temporarily-overrides-functions ()
+  (require 'dream-lib)
+  (defun dream-test-letf-target () 'real)
+  (should (eq (dream-letf ((defun dream-test-letf-target () 'fake))
+                (dream-test-letf-target))
+              'fake))
+  (should (eq (dream-test-letf-target) 'real)))
 
 (provide 'dream-core-test)
 ;;; dream-core-test.el ends here.
