@@ -11,6 +11,28 @@
 (require 'once-setup)
 (require 'on)
 
+
+(setup-define :hooks
+  (lambda (hook func)
+    `(add-hook ',hook #',func))
+  :documentation "Add pairs of hooks."
+  :repeatable t)
+
+(setup-define :load-after
+  (lambda (&rest features)
+    (let ((body `(require ',(setup-get 'feature))))
+      (dolist (feature (nreverse features))
+        (setq body `(with-eval-after-load ',feature ,body)))
+      body))
+  :documentation "Load the current feature after FEATURES.")
+
+(setup-define :after
+  (lambda (feature &rest body)
+    `(with-eval-after-load ',feature ,@body))
+  :documentation "Eval BODY after FEATURE."
+  :after-loaded t
+  :indent 1)
+
 (setup-define :global
   (lambda (key command) `(keymap-global-set ,key ,command))
   :documentation "Bind KEY to COMMAND in the global map."

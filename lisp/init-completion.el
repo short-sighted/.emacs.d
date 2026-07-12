@@ -47,9 +47,7 @@
   (:hook-into vertico-mode))
 
 (setup corfu
-  (:iload -40 corfu cape)
-  (:once (list :hooks (list :hook 'prog-mode-hook :depth -80))
-    (global-corfu-mode 1))
+  (:hooks on-first-input-hook global-corfu-mode)
   (:set corfu-cycle t
         corfu-auto t
         corfu-count 16

@@ -123,9 +123,10 @@
 
 (ert-deftest dream-setup-pruned-keywords-are-not-defined ()
   (require 'dream-setup)
-  (dolist (keyword '(:after :opt :hooks :init :bind-map))
+  (dolist (keyword '(:opt :init :bind-map))
     (should-not (assq keyword setup-macros)))
-  (should (assq :global setup-macros)))
+  (dolist (keyword '(:global :hooks :after :load-after))
+    (should (assq keyword setup-macros))))
 
 (ert-deftest dream-autoloads-source-fallback-never-compiles ()
   (require 'dream-autoloads)
