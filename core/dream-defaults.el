@@ -67,6 +67,14 @@
       url-configuration-directory dream-url-directory
       multisession-directory dream-multisession-directory)
 
+;;; Trusted content
+
+;; Emacs 31 restricts macro-expansion-based analysis (completion of
+;; local variables, elisp flymake) in untrusted elisp buffers.  Our own
+;; configuration is trusted by definition.
+(add-to-list 'trusted-content
+             (file-name-as-directory (file-truename user-emacs-directory)))
+
 (defun dream-defaults--create-missing-directories ()
   "Offer to create the parent directories of a nonexistent visited file."
   (unless (file-remote-p buffer-file-name)

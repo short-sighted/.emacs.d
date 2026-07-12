@@ -1060,5 +1060,12 @@
     (should (string-prefix-p dream-local-directory
                              (expand-file-name value)))))
 
+(ert-deftest dream-defaults-trust-the-configuration-tree ()
+  (require 'dream-defaults)
+  (should (cl-some (lambda (entry)
+                     (and (stringp entry)
+                          (file-equal-p entry user-emacs-directory)))
+                   trusted-content)))
+
 (provide 'dream-core-test)
 ;;; dream-core-test.el ends here.
