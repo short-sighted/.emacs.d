@@ -3,7 +3,9 @@
 (require 'dream-setup)
 
 (cl-eval-when (compile)
-  (require 'c-ts-mode))
+  (require 'c-ts-mode)
+  ;; `dream-lsp' carries no autoload cookie; see init-lsp.el.
+  (require 'init-lsp))
 
 (setup c-ts-mode
   (:autoload c++-ts-mode)
@@ -11,8 +13,8 @@
         c-ts-indent-offset 4))
 
 (once (list :packages 'init-lsp)
-  (add-hook 'c-ts-mode-hook #'lsp-deferred)
-  (add-hook 'c++-ts-mode-hook #'lsp-deferred))
+  (add-hook 'c-ts-mode-hook #'dream-lsp)
+  (add-hook 'c++-ts-mode-hook #'dream-lsp))
 
 (provide 'init-lang-cpp)
 ;;; init-lang-cpp.el ends here.

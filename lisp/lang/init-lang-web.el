@@ -3,13 +3,15 @@
 (require 'dream-setup)
 
 (cl-eval-when (compile)
-  (require 'lsp-mode))
+  (require 'lsp-mode)
+  ;; `dream-lsp' carries no autoload cookie; see init-lsp.el.
+  (require 'init-lsp))
 
 (setup web-mode
   (:match-file "*.vue"))
 
 (once (list :packages 'init-lsp)
-  (add-hook 'web-mode-hook #'lsp-deferred))
+  (add-hook 'web-mode-hook #'dream-lsp))
 
 (once (list :packages 'init-lsp 'lsp-mode
             :check (lambda ()

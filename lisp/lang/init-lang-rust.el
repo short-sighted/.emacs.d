@@ -3,10 +3,12 @@
 (require 'dream-setup)
 
 (cl-eval-when (compile)
-  (require 'flymake-clippy))
+  (require 'flymake-clippy)
+  ;; `dream-lsp' carries no autoload cookie; see init-lsp.el.
+  (require 'init-lsp))
 
 (once (list :packages 'init-lsp)
-  (add-hook 'rust-ts-mode-hook #'lsp-deferred))
+  (add-hook 'rust-ts-mode-hook #'dream-lsp))
 
 (setup flymake-clippy
   (:needs "cargo")

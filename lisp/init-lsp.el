@@ -8,7 +8,27 @@
   ;; These two defcustoms live in their own files, not lsp-mode.el.
   (require 'lsp-diagnostics)
   (require 'lsp-completion)
-  (require 'consult-lsp))
+  (require 'consult-lsp)
+  (require 'eglot)
+  (require 'consult-eglot))
+
+(defcustom dream-lsp-client 'lsp-mode
+  "Which LSP client `dream-lsp' starts in a buffer."
+  :type '(choice (const :tag "lsp-mode" lsp-mode)
+                 (const :tag "Eglot" eglot))
+  :group 'dream)
+
+(defun dream-lsp--client-function ()
+  "Return the entry-point function for `dream-lsp-client'."
+  (pcase dream-lsp-client
+    ('lsp-mode #'lsp-deferred)
+    ('eglot #'eglot-ensure)
+    (other (user-error "Unknown dream-lsp-client: %S" other))))
+
+(defun dream-lsp ()
+  "Start the configured LSP client in the current buffer."
+  (interactive)
+  (funcall (dream-lsp--client-function)))
 
 (setq lsp-session-file dream-lsp-session-file
       lsp-server-install-dir dream-lsp-server-directory
@@ -46,6 +66,18 @@
   (:when-loaded
     (keymap-set lsp-mode-map
                 "<remap> <xref-find-apropos>" #'consult-lsp-symbols)))
+
+(setup eglot
+  (:set eglot-autoshutdown t
+        eglot-events-buffer-config '(:size 0 :format full)
+        eglot-extend-to-xref t)
+  (:when-loaded
+    (keymap-set eglot-mode-map
+                "<remap> <xref-find-apropos>" #'consult-eglot-symbols)
+    ;; lsp-mode downloads the Vue server itself; Eglot needs the
+    ;; command on PATH.  Adjust when the volar CLI changes.
+    (add-to-list 'eglot-server-programs
+                 '(web-mode . ("vue-language-server" "--stdio")))))
 
 (provide 'init-lsp)
 ;;; init-lsp.el ends here.

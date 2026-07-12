@@ -202,10 +202,10 @@
       (require feature))
     (should (equal (alist-get 'file completion-category-overrides)
                    '((styles orderless partial-completion))))
-    (dolist (feature '(consult corfu lsp-mode magit gptel epkg))
+    (dolist (feature '(consult corfu lsp-mode eglot magit gptel epkg))
       (should-not (featurep feature)))
     (dolist (hook '(web-mode-hook c-ts-mode-hook c++-ts-mode-hook rust-ts-mode-hook))
-      (should (memq #'lsp-deferred (symbol-value hook))))
+      (should (memq #'dream-lsp (symbol-value hook))))
     (dolist (feature '(init-editing init-ui init-completion init-lsp
                        init-lang-programming init-lang-cpp init-lang-rust
                        init-lang-web init-lang init-spell init-vc init-tools
@@ -282,10 +282,10 @@
     (load (expand-file-name "lisp/lang/init-lang-rust.el"
                             user-emacs-directory)
           nil t)
-    (should-not (memq #'lsp-deferred rust-ts-mode-hook))
+    (should-not (memq #'dream-lsp rust-ts-mode-hook))
     (load (expand-file-name "lisp/init-lsp.el" user-emacs-directory) nil t)
     (should (= 1 (seq-count (lambda (function)
-                             (eq function #'lsp-deferred))
+                             (eq function #'dream-lsp))
                            rust-ts-mode-hook)))))
 
 (ert-deftest dream-once-installs-a-hook-once-without-making-it-one-buffer-only ()
@@ -1066,6 +1066,15 @@
                      (and (stringp entry)
                           (file-equal-p entry user-emacs-directory)))
                    trusted-content)))
+
+(ert-deftest dream-lsp-dispatcher-maps-client-choice-to-function ()
+  (require 'init-lsp)
+  (let ((dream-lsp-client 'lsp-mode))
+    (should (eq (dream-lsp--client-function) #'lsp-deferred)))
+  (let ((dream-lsp-client 'eglot))
+    (should (eq (dream-lsp--client-function) #'eglot-ensure)))
+  (let ((dream-lsp-client 'unknown))
+    (should-error (dream-lsp--client-function) :type 'user-error)))
 
 (provide 'dream-core-test)
 ;;; dream-core-test.el ends here.
