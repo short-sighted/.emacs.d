@@ -549,7 +549,16 @@ git commit -m "Document state-file, LSP client, and Windows conventions"
 
 ## 执行记录（执行时填写）
 
-- T0 前 `git status` 摘要：
-- T6 后 `make benchmark` p50/p95 对比：
-- flycheck 最终确认（是/否，日期）：
+- T0 前 `git status` 摘要：未提交 WIP 两处（init.el 注释头、init-completion 的 corfu-history
+  :load-after 重复块）+ 用户已 stage 的 flycheck-eglot assimilation + 泄漏的 projects.eld。
+- T6 后 `make benchmark`（2026-07-12）：startup p50 0.0337 / p95 0.0345；first-input
+  p50 0.0249 / p95 0.0257；门内无回归。
+- flycheck 最终确认（是/否，日期）：**待确认**——前置 (b) flycheck-eglot 已 assimilate
+  （v1.0-10-gcd1dd78），仅差口头确认后执行 T5。
 - Windows 复验结论（后补）：
+- 执行备注：T1 顺带发现并修复 check-isolated 子进程把 primitive trampoline JIT 进仓库根
+  eln-cache/ 的泄漏（dream-build--isolation-form 补 native-comp 关闭）；T4 红灯暴露
+  dream-lsp 无 cookie，语言单元按 Rule 2 在编译块 (require 'init-lsp)；既有测试脆弱性
+  记录：任何在 dream-extensions-load-at-declared-boundaries 之前失败的测试会经 ERT 的
+  pp 触发 global-eldoc-mode 提前消费 eldoc-mode-hook 上的 once，使该测试连坐失败
+  （仅红灯阶段可见，绿灯无影响）。
