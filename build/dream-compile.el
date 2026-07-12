@@ -15,6 +15,7 @@
   '("core/dream-paths.el"
     "core/dream-lib.el"
     "core/dream-hooks.el"
+    "core/dream-defaults.el"
     "core/dream-startup.el"
     "core/dream-autoloads.el"
     "core/dream-setup.el"))

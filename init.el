@@ -16,6 +16,7 @@
   (require 'dream-lib)
   (require 'dream-hooks)
   (require 'dream-setup)
+  (require 'dream-defaults)
 
   ;; Editor
   (require 'init-editing)

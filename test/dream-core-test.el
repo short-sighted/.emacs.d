@@ -192,6 +192,7 @@
     (should (member "init.el" files))
     (should (member "core/dream-startup.el" files))
     (should (member "core/dream-hooks.el" files))
+    (should (member "core/dream-defaults.el" files))
     (should (member "lisp/init-lsp.el" files))
     (should-not (member "early-init.el" files))
     (should (equal (car (last files)) "init.el"))
@@ -458,6 +459,29 @@
       (should (eq (nth 2 failure) boom)))
     ;; A failed attempt must not leave the trigger armed.
     (run-hooks 'dream-test-trigger-a-hook)))
+
+(ert-deftest dream-defaults-apply-vanilla-baseline ()
+  (require 'dream-defaults)
+  (should use-short-answers)
+  (should (eq ring-bell-function #'ignore))
+  (should (eq (default-value 'bidi-paragraph-direction) 'left-to-right))
+  (should find-file-visit-truename)
+  (should (memq #'window-divider-mode dream-init-ui-hook))
+  (should-not (keymap-lookup y-or-n-p-map "SPC")))
+
+(ert-deftest dream-escape-runs-hook-until-success-then-falls-back ()
+  (require 'dream-defaults)
+  (let ((dream-escape-hook nil)
+        (order nil))
+    (add-hook 'dream-escape-hook (lambda () (push 'first order) nil))
+    (add-hook 'dream-escape-hook (lambda () (push 'second order) t) 50)
+    (add-hook 'dream-escape-hook (lambda () (push 'third order) t) 90)
+    (dream/escape)
+    (should (equal (nreverse order) '(first second))))
+  (let ((dream-escape-hook nil))
+    (should (eq 'quit (condition-case nil
+                          (progn (dream/escape) nil)
+                        (quit 'quit))))))
 
 (provide 'dream-core-test)
 ;;; dream-core-test.el ends here.
