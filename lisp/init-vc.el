@@ -7,7 +7,8 @@
 (require 'dream-setup)
 
 (cl-eval-when (compile)
-  (require 'magit))
+  (require 'magit)
+  (require 'magit-status))
 
 (setup magit
   (:set magit-auto-revert-mode nil)
