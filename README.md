@@ -8,7 +8,9 @@
 ```text
 early-init.el             启动前策略
 init.el                   显式顶层装配
-core/dream-*.el           启动、路径、setup 与 autoload 基础设施
+core/dream-hooks.el       一次性启动生命周期 hook 与错误隔离
+core/dream-defaults.el    Emacs 31 基线默认值与统一 escape
+core/dream-*.el           其余启动、路径、setup 与 autoload 基础设施
 lib/dream-*.el            可独立加载的扩展库
 lisp/init-*.el            编辑器与工具领域配置
 lisp/lang/init-lang-*.el  编程通用层与语言集成

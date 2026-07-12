@@ -4,7 +4,7 @@
 
 **Goal:** 从 `/Users/jc/Workspace/doomemacs-core` 提取四类能力重建 core：(1) doom-lib.el 的一次性启动 hook 机制（`doom-run-hook-on`），替换 on.el 并摘除对它的全部引用（**on 子模块本身由用户自行移除，不在本计划内**）；(2) doom-emacs.el 的更好默认值；(3) doom 的错误层级定义与 `doom-log` 分级日志；(4) 三组便捷宏（defadvice!/setq-hook!/letf! 的 dream- 前缀版）。
 
-**Architecture:** 两个新 core 文件——`core/dream-hooks.el`（4 个 hook 定义 + `dream-run-hook-on` 机制 + 自装配，完整替代 on.el）与 `core/dream-defaults.el`（doom-emacs.el 默认值提取 + `dream/escape`）；错误定义、`dream-log`、便捷宏并入既有 `core/dream-lib.el`。所有新代码遵守已落地的编译期声明规范（`cl-eval-when (compile)` / Rule 5 存根），由 `make check-isolated` 与 `make check-declare` 两道既有门守护。构建系统零改动（core/ 扫描式编译自动覆盖新文件）。
+**Architecture:** 两个新 core 文件——`core/dream-hooks.el`（4 个 hook 定义 + `dream-run-hook-on` 机制 + 自装配，完整替代 on.el）与 `core/dream-defaults.el`（doom-emacs.el 默认值提取 + `dream/escape`）；错误定义、`dream-log`、便捷宏并入既有 `core/dream-lib.el`。所有新代码遵守已落地的编译期声明规范（`cl-eval-when (compile)` / Rule 5 存根），由 `make check-isolated` 与 `make check-declare` 两道既有门守护。执行时确认 core 使用显式构建清单，因此两个新文件同步加入 `dream-build-core-files` 并由 ERT 断言收录。
 
 **Tech Stack:** Emacs 31.0.90, borg v4.5.2, setup.el/once.el（保留）, ERT, make。
 
@@ -52,7 +52,7 @@ on.el（site-lisp/on/on.el，106 行）与 doom `doom-run-hook-on`（doom-lib.el
 - **工作树有用户未提交的编辑**：dream-setup.el 重新加回 `:hooks`/`:load-after`/`:after` 三个 setup 关键字；init-completion.el 的 corfu 改为 `(:hooks on-first-input-hook global-corfu-mode)`。这使既有测试 `dream-setup-pruned-keywords-are-not-defined`（断言 :after/:hooks 未定义）**当前失败**——T0 先修测试、提交基线。
 - 当前测试数 **29**（cargo 缺席时 1 skipped）；进度线：T0 29 绿 → T1 31 → T2 34 → T3 34 → T4 36 → T5 39。
 - init.el 加载序：dream-paths → dream-startup → dream-autoloads → dream-lib → dream-setup → 各单元 → dream-startup-initialize。新序：dream-startup 顶部 require dream-hooks（其 require dream-lib），init.el 显式列出 dream-hooks 并在 dream-setup 后插入 dream-defaults。
-- 构建为扫描式：`dream-build-config-files` 自动收录 core/ 新文件（测试 `dream-build-file-set-scans-lisp-tree` 已证），Makefile/构建脚本**零改动**。
+- 构建对 core/ 使用 `dream-build-core-files` 显式清单，对 lib/ 与 lisp/ 使用扫描；两个新 core 文件必须同步加入清单，测试 `dream-build-file-set-scans-lisp-tree` 负责防漂移。
 - 编译安全实测（`emacs -Q --batch` boundp/fboundp）：`after-init-time`=t（batch 也置位，测试守卫需 let-bind nil）、`x-stretch-cursor`=t、`lwarn`=t、`keymap-unset`=t、`run-hook-wrapped`=t、`window-buffer-change-functions`=t、`y-or-n-p-map`=t、uniquify/show-paren/mwheel/window-divider 变量全预加载；`gnutls-min-prime-bits`=nil（需编译期 require gnutls）、`string-remove-suffix`=nil（subr-x 非预加载，dream-lib 需 require subr-x）、`w32-lwindow-modifier`=nil（mac 上）。
 
 ### 设计定案（用户四问已答）
@@ -420,7 +420,7 @@ afterwards, and each chain attempts at most once even on error."
 实现要点（评审核对）：`make-symbol` + `fset` 与 doom 一致（未 intern，卸载即消失）；`running` 为词法闭包变量，错误路径下 hook-var 不清零但链已熄火——只报一次；`after-init-time` 在 command-line-1 之前置位，命令行文件可正常触发 first-file（on.el 做不到）；daemon 分支与 `find-file-hook`→`after-find-file` 特判逐字保留 doom 语义。
 
 - [ ] **Step 4:** `make check`。期望：`Ran 34 tests, 34 results as expected`。
-- [ ] **Step 5:** `make config-build && make check-isolated`。新文件被扫描式构建自动收录，严格编译零警告。
+- [ ] **Step 5:** `make config-build && make check-isolated`。新文件已加入显式 core 构建清单，严格编译零警告。
 - [ ] **Step 6: Commit** —
 
 ```bash
@@ -1066,8 +1066,19 @@ git commit -m "Document dream-hooks, logging, and defaults conventions"
 
 ## 执行记录（执行时填写）
 
-- T0 基线 `make benchmark` p50/p95：
-- T6 终态 `make benchmark` p50/p95：
-- `make check-isolated` 时长（新文件加入后）：
-- 交互冒烟结论（macOS）：
-- Windows 补验结论（后补）：
+- T0 基线 `make benchmark` p50/p95：startup `24.244/24.685ms`；first input
+  `24.007/24.593ms`；first prog `142.553/143.675ms`；idle max
+  `94.187/96.252ms`。旧基线属于 Corfu 迁移到 first-input 之前，已在 T0
+  批准代码上用 `make benchmark-baseline` 重建。
+- T6 终态 `make benchmark` p50/p95：startup `22.576/23.772ms`；first input
+  `24.164/25.467ms`；first prog `139.949/142.320ms`；idle max
+  `93.267/96.631ms`。全部低于 10% 回归门。
+- `make check-isolated` 时长（新文件加入后）：`6.46s` real（`5.20s` user，
+  `1.16s` sys）。
+- 交互冒烟结论（macOS）：独立 `dream-plan-test` daemon 首帧后四个一次性
+  hook 均清零；doom-modeline、Menlo、window-divider、`C-g` remap、
+  Command=super、Option=meta 均生效。独立文件访问断言确认 recentf 启用且
+  first-file 清零。负向验证第一次返回含 hook/函数名的 `dream-hook-error`，
+  第二次无错误。检查中修正了 Doom 原实现仍让 predicate 阻断 daemon 首帧
+  全量触发的问题，并加入回归覆盖。
+- Windows 补验结论（后补）：本次无 Windows 环境，尚未执行。
