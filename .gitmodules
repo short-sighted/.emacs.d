@@ -99,6 +99,10 @@
 	path = site-lisp/flycheck
 	url = https://github.com/flycheck/flycheck
 	ignore = untracked
+[submodule "flycheck-eglot"]
+	path = site-lisp/flycheck-eglot
+	url = https://github.com/flycheck/flycheck-eglot
+	ignore = untracked
 [submodule "flymake-clippy"]
 	path = site-lisp/flymake-clippy
 	url = https://github.com/mgmarlow/flymake-clippy
