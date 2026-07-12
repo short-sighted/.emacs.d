@@ -180,10 +180,6 @@
 	path = site-lisp/nerd-icons-corfu
 	url = https://github.com/LuigiPiucco/nerd-icons-corfu
 	ignore = untracked
-[submodule "on"]
-	path = site-lisp/on
-	url = https://gitlab.com/ajgrf/on.el
-	ignore = untracked
 [submodule "once"]
 	path = site-lisp/once
 	url = https://github.com/emacs-magus/once.git
