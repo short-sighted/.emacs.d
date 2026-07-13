@@ -131,6 +131,10 @@
 	path = site-lisp/hydra
 	url = https://github.com/abo-abo/hydra
 	ignore = untracked
+[submodule "hyperspec"]
+	path = site-lisp/hyperspec
+	url = https://github.com/emacsorphanage/hyperspec
+	ignore = untracked
 [submodule "jinx"]
 	path = site-lisp/jinx
 	url = https://github.com/minad/jinx
@@ -217,6 +221,14 @@
 [submodule "shrink-path"]
 	path = site-lisp/shrink-path
 	url = https://gitlab.com/bennya/shrink-path.el
+	ignore = untracked
+[submodule "sly"]
+	path = site-lisp/sly
+	url = https://github.com/joaotavora/sly
+	ignore = untracked
+[submodule "sly-macrostep"]
+	path = site-lisp/sly-macrostep
+	url = https://github.com/joaotavora/sly-macrostep
 	ignore = untracked
 [submodule "spinner"]
 	path = site-lisp/spinner
