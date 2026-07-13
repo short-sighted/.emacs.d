@@ -41,7 +41,11 @@
    "<remap> <goto-line>" consult-goto-line
    "<remap> <imenu>" consult-imenu
    "<remap> <yank-pop>" consult-yank-pop
-   "C-s" consult-line))
+   "C-s" consult-line)
+  (dream-defadvice +consult-recentf-a (&rest _args)
+    :before #'consult-recent-file
+    :before #'consult-buffer
+    (recentf-mode 1)))
 
 (setup marginalia
   (:hook-into vertico-mode))

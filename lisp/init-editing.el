@@ -73,22 +73,28 @@
               (cl-remove-if-not #'savehist-printable register-alist)))
 
 (setup savehist
+  (:hook-into dream-first-input-hook)
   (:set savehist-file dream-savehist-file
         savehist-autosave-interval nil
         savehist-save-minibuffer-history t
         savehist-additional-variables
-        '(kill-ring register-alist mark-ring global-mark-ring
+        '(kill-ring
+          register-alist
+          mark-ring global-mark-ring
           search-ring regexp-search-ring))
-  (:once (list :before 'vertico-mode) (savehist-mode 1))
   (:when-loaded
     (add-hook 'savehist-save-hook #'dream-editing--savehist-unpropertize)
     (add-hook 'savehist-save-hook #'dream-editing--savehist-clean-registers)))
 
 (setup recentf
+  (:autoload recentf-open-files)
   (:set recentf-auto-cleanup 'never
         recentf-max-menu-items 50
-        recentf-max-saved-items 50
-        recentf-save-file dream-recentf-file))
+        recentf-max-saved-items 200
+        recentf-save-file dream-recentf-file)
+  (:when-loaded
+    (add-to-list 'recentf-filename-handlers #'substring-no-properties)
+    (add-hook 'kill-emacs-hook #'recentf-cleanup -50)))
 
 (add-hook 'dream-first-input-hook #'delete-selection-mode -90)
 (add-hook 'dream-first-file-hook #'recentf-mode -90)

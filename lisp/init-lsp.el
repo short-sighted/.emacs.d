@@ -1,11 +1,15 @@
 ;;; init-lsp.el --- Language server configuration. -*- lexical-binding: t; -*-
+;;
+;;; Commentary:
+;;
+;;; Code:
 
 (require 'dream-paths)
 (require 'dream-setup)
 
 (cl-eval-when (compile)
   (require 'lsp-mode)
-  ;; These two defcustoms live in their own files, not lsp-mode.el.
+  ;; These two defcustom live in their own files, not lsp-mode.el.
   (require 'lsp-diagnostics)
   (require 'lsp-completion)
   (require 'consult-lsp)
@@ -44,7 +48,8 @@
 (setup lsp-mode
   (:iload 0 dash f ht lv markdown-mode spinner s lsp-protocol)
   (:autoload lsp-install-server)
-  (:hook lsp-completion-mode))
+  (:hook lsp-completion-mode)
+  (:when-loaded (setq jsonrpc-event-hook nil)))
 
 (once (list :packages 'lsp-protocol)
   (lambda ()
@@ -72,6 +77,7 @@
         eglot-events-buffer-config '(:size 0 :format full)
         eglot-extend-to-xref t)
   (:when-loaded
+    (setq jsonrpc-event-hook nil)
     (keymap-set eglot-mode-map
                 "<remap> <xref-find-apropos>" #'consult-eglot-symbols)
     ;; lsp-mode downloads the Vue server itself; Eglot needs the

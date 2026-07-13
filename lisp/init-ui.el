@@ -1,18 +1,18 @@
 ;;; init-ui.el --- Frame and display configuration. -*- lexical-binding: t; -*-
+;;
+;;; Commentary:
+;;
+;;; Code:
 
 (require 'dream-setup)
 
 (cl-eval-when (compile)
   (require 'doom-modeline))
 
-;; Rule 5: projectile is not installed; doom-modeline merely honors
-;; this variable when it is.
-(defvar projectile-dynamic-mode-line)
-
 (setq inhibit-startup-screen t
       inhibit-startup-echo-area-message user-login-name
       inhibit-default-init t
-      frame-title-format '("%b — Emacs")
+      frame-title-format '("%b — Dream Emacs")
       doom-modeline-bar-width 3
       doom-modeline-github nil
       doom-modeline-mu4e nil
@@ -22,8 +22,7 @@
       doom-modeline-check 'simple
       doom-modeline-buffer-file-name-style 'relative-from-project
       doom-modeline-buffer-encoding 'nondefault
-      doom-modeline-default-eol-type (if (eq system-type 'windows-nt) 1 0)
-      projectile-dynamic-mode-line nil)
+      doom-modeline-default-eol-type (if (eq system-type 'windows-nt) 1 0))
 
 (setq-default display-line-numbers-width 3
               display-line-numbers-widen t)
