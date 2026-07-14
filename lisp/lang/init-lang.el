@@ -6,6 +6,7 @@
 ;;; Code:
 
 (require 'init-lang-programming)
+(require 'init-lang-common-lisp)
 (require 'init-lang-cpp)
 (require 'init-lang-rust)
 (require 'init-lang-web)

@@ -225,10 +225,10 @@
 [submodule "sly"]
 	path = site-lisp/sly
 	url = https://github.com/joaotavora/sly
-	ignore = untracked
-[submodule "sly-macrostep"]
-	path = site-lisp/sly-macrostep
-	url = https://github.com/joaotavora/sly-macrostep
+    load-path = .
+    load-path = lib
+    load-path = contrib
+    load-path = slynk
 	ignore = untracked
 [submodule "spinner"]
 	path = site-lisp/spinner
