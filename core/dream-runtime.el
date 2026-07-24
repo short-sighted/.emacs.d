@@ -18,7 +18,7 @@
 (defconst dream-runtime-required-trampolines
   '(after-find-file display-startup-echo-area-message
     describe-buffer-bindings make-process rename-buffer all-completions
-    rename-file)
+    rename-file recursive-edit)
   "Primitive trampolines prepared only by the explicit build workflow.")
 
 (defconst dream-runtime--compiler-functions
