@@ -1,4 +1,8 @@
 ;;; init-editing.el --- Editing and persistence policy. -*- lexical-binding: t; -*-
+;;
+;;; Commentary:
+;;
+;;; Code:
 
 (require 'dream-paths)
 (require 'dream-core)
@@ -51,7 +55,7 @@
     (make-directory auto-save-list-file-prefix t)))
 
 (defun dream-editing--guess-mode-after-save ()
-  "Recompute the major mode after saving a fundamental-mode file."
+  "Recompute the major mode after saving a `fundamental-mode' file."
   (when (eq major-mode 'fundamental-mode)
     (let ((buffer (or (buffer-base-buffer) (current-buffer))))
       (when (and (buffer-file-name buffer)
@@ -104,6 +108,20 @@
 
 (with-eval-after-load 'hideshow
   (keymap-set hs-minor-mode-map "s-<tab>" #'hs-cycle))
+
+(when (and (string-match-p "pgtk" system-configuration-features)
+     (not (null (getenv "WSL_DISTRO_NAME"))))
+  (defvar wl-copy-process nil
+    "Wayland system clipboard")
+  (defun wsl-wl-copy (text)
+    (let ((process-connection-type nil))
+      (setq wl-copy-process (start-process "wl-copy" nil "wl-copy" text))))
+  (defun wsl-wl-paste ()
+    (if (and wl-copy-process (process-live-p wl-copy-process))
+        nil ; Don't read from clipboard if we just wrote to it
+      (shell-command-to-string "wl-paste -n")))
+  (setq interprogram-cut-function 'wsl-wl-copy)
+  (setq interprogram-paste-function 'wsl-wl-paste))
 
 (provide 'init-editing)
 ;;; init-editing.el ends here.
