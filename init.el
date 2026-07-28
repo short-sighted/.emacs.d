@@ -37,6 +37,8 @@
 
   ;; Tools
   (require 'init-vc)
+  (require 'init-project)
+  (require 'init-shell)
   (require 'init-tools)
   (require 'init-llm))
 

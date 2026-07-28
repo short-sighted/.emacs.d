@@ -119,6 +119,11 @@
 	path = site-lisp/geiser-racket
 	url = https://gitlab.com/emacs-geiser/racket
 	ignore = untracked
+[submodule "ghostel"]
+	path = site-lisp/ghostel
+	url = https://github.com/dakra/ghostel
+	ignore = untracked
+    build-step = (dream-borg-build-ghostel)
 [submodule "gptel"]
 	path = site-lisp/gptel
 	url = https://github.com/karthink/gptel
@@ -201,6 +206,10 @@
 [submodule "pg"]
 	path = site-lisp/pg
 	url = https://github.com/emarsden/pg-el
+	ignore = untracked
+[submodule "projectile"]
+	path = site-lisp/projectile
+	url = https://github.com/bbatsov/projectile
 	ignore = untracked
 [submodule "redis"]
 	path = site-lisp/redis
